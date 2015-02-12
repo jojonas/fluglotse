@@ -5,8 +5,9 @@ function love.draw()
 	love.graphics.push()
 		local w = map.bounds[2][1] - map.bounds[1][1]
 		local h = map.bounds[2][2] - map.bounds[1][2]
-		local gw, gh = love.graphics.getDimensions()
-		local scale = math.min(gh/h, gw/w) -- TODO: replace with max
+
+		local gw, gh = getGameViewDimensions()
+		local scale = math.min(gh/h, gw/w)
 		
 		love.graphics.translate(gw/2, gh/2)
 		love.graphics.scale(scale)
