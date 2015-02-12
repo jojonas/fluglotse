@@ -33,4 +33,6 @@ function love.draw()
 		local plane = currentMap.planes[i]
 		drawPlane(plane)
 	end
+	
+	drawUI()
 end
