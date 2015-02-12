@@ -21,7 +21,7 @@ function spawnPlane()
 	table.insert(map.planes, plane)
 end
 
-function updatePlane(plane)
+function updatePlane(plane, dt)
 	local direction = planeDirection(plane)
 	plane.pos[1] = plane.pos[1] + plane.speed * direction[1] * dt
 	plane.pos[2] = plane.pos[2] + plane.speed * direction[2] * dt

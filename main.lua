@@ -2,6 +2,7 @@ require "helpers"
 require "load"
 require "update"
 require "draw"
+require "map"
 require "plane"
 
 
