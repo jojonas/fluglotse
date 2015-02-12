@@ -3,7 +3,7 @@ require "load"
 require "update"
 require "draw"
 require "plane"
-
+require "ui"
 
 function love.run()
 	if love.math then
