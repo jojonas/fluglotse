@@ -22,6 +22,11 @@ function loadMap(map)
 	
 	currentMap = map
 	spawnPlane()
+	spawnPlane()
+	spawnPlane()
+	spawnPlane()
+	spawnPlane()
+	spawnPlane()
 end
 
 function drawMap(map) 

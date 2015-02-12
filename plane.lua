@@ -5,16 +5,21 @@ function planeDirection(plane)
 end
 
 function printPlane(plane)
-	print("PLANE. Target: " .. plane.target.name)
+	print("PLANE. Identifier: " .. plane.identifier .. " Target: " .. plane.target.name)
+end
+
+function generateIdentifier()
+	return randomCharacter() .. "-" .. tostring(love.math.random(0,99))
 end
 
 function spawnPlane()
 	local map = currentMap
-	local input = map.nodes[randomChoice(map.inbound)]
+	local input = map.nodes[randomChoice(map.mapEntrances)]
 	
 	assert(input ~= nil, "Input node not found in node list.")
 	
 	local plane = {
+		identifier = "",
 		pos = {input.pos[1], input.pos[2]},
 		drawPos = {input.pos[1], input.pos[2]},
 		target = input.actions["auto"],
@@ -24,10 +29,22 @@ function spawnPlane()
 		nextAction = "auto"
 	}
 	
+	repeat 
+		local unique = true
+		plane.identifier = generateIdentifier()
+		for i=1,#map.planes do
+			if map.planes[i].identifier == plane.identifier then
+				unique = false
+				break
+			end
+		end
+	until unique
+	
 	assert(plane.target, "Plane has no target.")
-	print(plane.target.pos[1], plane.target.pos[2])
 	
 	table.insert(map.planes, plane)
+	
+	return plane
 end
 
 function removePlane(plane)
@@ -41,7 +58,10 @@ function removePlane(plane)
 		end
 	end
 	if todelete then
-		table.remove(table, todelete)
+		if todelete < uiSelectedListElement or todelete == #map.planes then
+			uiSelectedListElement = uiSelectedListElement - 1
+		end
+		table.remove(map.planes, todelete)
 	end
 end
 
@@ -54,6 +74,13 @@ function updatePlane(plane, dt)
 		plane.pos[1] = plane.pos[1] + plane.speed * direction[1] * dt
 		plane.pos[2] = plane.pos[2] + plane.speed * direction[2] * dt
 	else
+		for i=1,#currentMap.mapExits do
+			if plane.target.name == currentMap.mapExits[i] then
+				removePlane(plane)
+				return
+			end
+		end
+		
 		local nxt = plane.target.actions[plane.nextAction]
 		assert(nxt, "Next action is undefined.")
 		plane.target = nxt
@@ -71,14 +98,15 @@ function updatePlane(plane, dt)
 	end
 end
 
-function drawPlane(plane)
+function drawPlane(plane, selected)
 	love.graphics.push()
-		
 		love.graphics.setColor({255,0,0})
 		love.graphics.translate(plane.drawPos[1], plane.drawPos[2])
-		
+		if selected then
+			love.graphics.setLineWidth(2)
+			love.graphics.rectangle("line", -50,-50,100,100)
+		end
 		love.graphics.rotate(plane.heading)
-		
 		love.graphics.polygon("fill", {30,0,-40,30,-40,-30})
 	love.graphics.pop()
 end

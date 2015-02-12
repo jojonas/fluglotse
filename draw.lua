@@ -17,7 +17,7 @@ function love.draw()
 		
 		for i=1,#currentMap.planes do
 			local plane = currentMap.planes[i]
-			drawPlane(plane)
+			drawPlane(plane, i==uiSelectedListElement)
 		end
 	love.graphics.pop()
 	

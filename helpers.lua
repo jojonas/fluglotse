@@ -10,3 +10,7 @@ function vectorNormalized(array)
 	local n = vectorNorm(array)
 	return {array[1]/n, array[2]/n}
 end
+
+function randomCharacter()
+	return string.char(love.math.random(string.byte("A"), string.byte("Z")))
+end

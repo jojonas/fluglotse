@@ -5,6 +5,7 @@ require "draw"
 require "map"
 require "plane"
 require "ui"
+require "actions"
 
 function love.run()
 	if love.math then

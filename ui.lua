@@ -5,16 +5,13 @@ local fillerColor = {50, 50, 50, 255}
 local hoverColors = {borderColor, {100, 100, 100, 255}}
 local rectBorder = 1
 local uiElementsMargin = 2
-local buttonNames = {"Takeoff permission granted.", "Taxi off the runway.", "Change runway.", "DUWÄKKEDUWOPPE", "10$ hanging from my anus", "penis", "Fukboi"}
-local buttonKeyMap = {"u", "i", "o", "p", "j", "k", "l"}
 local numButtonsX = 3
 local numButtonsY = 3
 local buttonMargin = 3
 local elementsInList = 8
 local listElementMargins = 2
 local scrollButtonWidth = 20
-uiListElements = {"RX-Cock", "JK-Penis", "jj", "kk", "zz", "pp", "hh", "jpolk", "jkfdlöa", "Hund", "Katze", "Fisch"}
-uiSelectedListElement = 2
+uiSelectedListElement = 1
 local uiListElementOffset = 0
 local lastLeftMouseDown = false
 
@@ -44,6 +41,8 @@ function button(text, x, y, w, h)
 end
 
 function drawUI()
+	local map = currentMap
+	
 	local uiStartY = love.window.getHeight() - uiHeight
 	
 	drawBorderRect(0, uiStartY, love.window.getWidth(), uiHeight, borderColor, fillerColor)
@@ -55,11 +54,11 @@ function drawUI()
 	if button("/\\", scrollX, scrollY, scrollW, scrollH) then 
 		uiListElementOffset = math.max(uiListElementOffset - 1, 0) end
 	if button("\\/", scrollX, scrollY + scrollH, scrollW, scrollH) then 
-		uiListElementOffset = math.min(uiListElementOffset + 1, #uiListElements - elementsInList) end
+		uiListElementOffset = math.min(uiListElementOffset + 1, #map.planes - elementsInList) end
 	
 	drawBorderRect(uiElementsMargin, uiStartY + uiElementsMargin, planeListWidth - scrollButtonWidth, uiHeight - 2*uiElementsMargin, borderColor, fillerColor)
 	local listElementHeight = (uiHeight - uiElementsMargin * 2) / elementsInList
-	for i = 1, math.min(elementsInList, #uiListElements) do
+	for i = 1, math.min(elementsInList, #map.planes) do
 		local rectX = uiElementsMargin + listElementMargins
 		local rectY = uiStartY + uiElementsMargin + listElementMargins + listElementHeight * (i-1)
 		local rectW = planeListWidth - listElementMargins*2 - scrollButtonWidth
@@ -74,11 +73,10 @@ function drawUI()
 		end
 		
 		love.graphics.setColor(255, 255, 255, 255)
-		love.graphics.printf(uiListElements[i + uiListElementOffset], uiElementsMargin + listElementMargins, 
+		love.graphics.printf(map.planes[i + uiListElementOffset].identifier, uiElementsMargin + listElementMargins, 
 									uiStartY + uiElementsMargin + listElementMargins + listElementHeight * (i-1) + 4, 
 									planeListWidth - listElementMargins*2 - scrollButtonWidth, "center")
 	end
-	
 	
 	local buttonFieldX = uiElementsMargin + planeListWidth + buttonMargin
 	local buttonFieldY = uiStartY + buttonMargin
@@ -89,16 +87,19 @@ function drawUI()
 	local buttonIndex = 1
 	for xButton = 0, numButtonsX - 1 do
 		for yButton = 0, numButtonsY - 1 do
-			local buttonText = buttonNames[buttonIndex]
-			if buttonText then
-				local x = buttonFieldX + buttonSizeW*xButton + buttonMargin/2
-				local y = buttonFieldY + buttonSizeH*yButton + buttonMargin/2
-				local w = buttonSizeW - buttonMargin
-				local h = buttonSizeH - buttonMargin
-				
-				if button(buttonText, x, y, w, h) or love.keyboard.isDown(buttonKeyMap[buttonIndex]) then
-					if true then -- check if option is valid
-						print(buttonText)
+			local actionId = actionOrder[buttonIndex]
+			if actionId then
+				local selectedPlane = map.planes[uiSelectedListElement]
+				if selectedPlane and selectedPlane.target.actions[actionId] ~= nil then
+					local action = actions[actionId]
+					
+					local x = buttonFieldX + buttonSizeW*xButton + buttonMargin/2
+					local y = buttonFieldY + buttonSizeH*yButton + buttonMargin/2
+					local w = buttonSizeW - buttonMargin
+					local h = buttonSizeH - buttonMargin
+					
+					if button(action.name, x, y, w, h) or love.keyboard.isDown(action.shortcut) then
+						selectedPlane.nextAction = actionId
 					end
 				end
 			end

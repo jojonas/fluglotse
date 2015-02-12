@@ -1,7 +1,7 @@
 map1 = {
 	bounds = {{0,0},{2200,1600}},
-	inbound = {"airIncoming"},
-	outbound = {"airOutgoing"},
+	mapEntrances = {"airIncoming"},
+	mapExits = {"airOutgoing"},
 	
 	nodes = {
 		["gate1"] = {

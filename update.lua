@@ -1,6 +1,6 @@
 function love.update(dt)
 	local map = currentMap
-	for i=1,#map.planes do
+	for i=#map.planes,1,-1 do
 		local plane = map.planes[i]
 		updatePlane(plane, dt)
 	end
