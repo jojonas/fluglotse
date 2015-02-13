@@ -403,7 +403,7 @@ end
 
 function pickNode(x, y)
 	for k, v in pairs(nodes) do
-		if pointInCircle({x, y}, {nodes[k].pos[1], nodes[k].pos[2], nodeRadius}) then
+		if pointInCircle({x, y}, {nodes[k].pos[1], nodes[k].pos[2], nodeRadius/camera.scale}) then
 			return k
 		end
 	end
