@@ -5,3 +5,9 @@ function love.update(dt)
 		updatePlane(plane, dt)
 	end
 end
+
+function love.keypressed(key, isrepeat)
+	if key == " " then
+		spawnPlane()
+	end
+end

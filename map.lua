@@ -10,6 +10,9 @@ function loadMap(map)
 	end
 	
 	for name, node in pairs(map.nodes) do
+		if not node.actions then 
+			node.actions = {}
+		end
 		for action, nxt in pairs(node.actions) do
 			if type(nxt) == "string" then
 				node.actions[action] = map.nodes[nxt]
@@ -18,14 +21,15 @@ function loadMap(map)
 		if not node.actions["auto"] then
 			node.actions["auto"] = node
 		end
+		if node.speedFactor == nil then
+			node.speedFactor = 1.0
+		end
+		if node.queueing == nil then 
+			node.queueing = true
+		end
 	end
 	
 	currentMap = map
-	spawnPlane()
-	spawnPlane()
-	spawnPlane()
-	spawnPlane()
-	spawnPlane()
 	spawnPlane()
 end
 

@@ -40,6 +40,17 @@ function button(text, x, y, w, h)
 	return hovered and love.mouse.isDown("l") and not lastLeftMouseDown
 end
 
+function toScreenCoordinates(mx, my)
+	local map = currentMap 
+	
+	local w = map.bounds[2][1] - map.bounds[1][1]
+	local h = map.bounds[2][2] - map.bounds[1][2]
+	local gw, gh = getGameViewDimensions()
+	local scale = math.min(gh/h, gw/w)
+	
+	return (mx-w/2)*scale+gw/2, (my-h/2)*scale+gh/2
+end
+
 function drawUI()
 	local map = currentMap
 	
@@ -108,4 +119,10 @@ function drawUI()
 	end
 	
 	lastLeftMouseDown = love.mouse.isDown("l")
+	
+	for i=1,#map.planes do
+		local plane = map.planes[i]
+		local x, y = toScreenCoordinates(plane.drawPos[1]-plane.size/2, plane.drawPos[2]-plane.size-5, plane.size, "center")
+		love.graphics.print(plane.identifier, x, y)
+	end
 end
