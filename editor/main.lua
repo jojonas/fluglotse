@@ -385,7 +385,8 @@ function love.mousepressed(x, y, button)
 	end
 	
 	if editMode == "connectNodes" and button == "r" and selectedNode and picked then
-		nodes[selectedNode].actions[getName()] = picked
+		local name = tableElements(nodes[selectedNode].actions) == 0 and "auto" or getName()
+		nodes[selectedNode].actions[name] = picked
 	end
 	
 	if editMode == "setBounds" then
@@ -395,6 +396,12 @@ function love.mousepressed(x, y, button)
 			bounds[2] = toWorldCoords(love.mouse.getPosition())
 		end
 	end
+end
+
+function tableElements(table)
+	local num = 0
+	for k, v in pairs(table) do num = num + 1 end
+	return num
 end
 
 function boolsToInt(a, b)
