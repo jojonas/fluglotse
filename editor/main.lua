@@ -154,6 +154,7 @@ function love.textinput(str)
 end
 
 function interpretCommand(str)
+	lastCommand = str
 	local findDelim = str:find(":") or str:len()
 	local command = str:sub(1, findDelim - 1):lower()
 	if command == "loadbackground" then
@@ -187,6 +188,7 @@ function interpretCommand(str)
 					nodes[selectedNode].actions[newName] = targetNode
 				else
 					outputLine = "Selected node does not exist anymore."
+				end
 			else
 				outputLine = "Selected node is not connected to the specified node."
 			end
@@ -249,7 +251,7 @@ function interpretCommand(str)
 		local name = str:sub(findDelim+1)
 		loadMap(name)
 	else
-		outputLine = "Command not recognized."
+		outputLine = "'" .. str .. "' - Command not recognized."
 	end
 end
 
@@ -296,12 +298,7 @@ function inSet(set, str)
 	return false
 end
 
-function love.keypressed(key, isrepeat)
-	if key == "return" then
-		interpretCommand(consoleInputLine)
-		consoleInputLine = ""
-	end
-	
+function love.keypressed(key, isrepeat)	
 	if love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") then
 		if key == "s" then
 			if saveFileName then saveMap(saveFileName) end
@@ -312,6 +309,10 @@ function love.keypressed(key, isrepeat)
 				local nextKey, nextNode = next(nodes[selectedNode].actions, nil)
 				selectedNode = nextNode
 			end
+		end
+		
+		if key == "return" then
+			if lastCommand then interpretCommand(lastCommand) end
 		end
 		
 		if key == "b" then
@@ -358,6 +359,11 @@ function love.keypressed(key, isrepeat)
 			if selectedNode then
 				nodes[selectedNode].queueing = not nodes[selectedNode].queueing
 			end
+		end
+	else
+		if key == "return" then
+			interpretCommand(consoleInputLine)
+			consoleInputLine = ""
 		end
 	end
 	
