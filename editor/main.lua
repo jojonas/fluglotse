@@ -162,21 +162,26 @@ function interpretCommand(str)
 			local params = str:sub(findDelim+1)
 			local findAmp = params:find("&") or params:len()
 			local targetNode = params:sub(1, findAmp - 1)
-			local newName = params:sub(findAmp + 1)
 			
-			local currentName = nil
-			local mark = {}
-			for k, v in pairs(nodes[selectedNode].actions) do
-				if v == targetNode then
-					mark[#mark + 1] = k
+			if nodes[targetNode] ~= nil then
+				local newName = params:sub(findAmp + 1)
+				
+				local currentName = nil
+				local mark = {}
+				for k, v in pairs(nodes[selectedNode].actions) do
+					if v == targetNode then
+						mark[#mark + 1] = k
+					end
 				end
+				
+				for i = 1, #mark do
+					nodes[selectedNode].actions[mark[i]] = nil
+				end
+				
+				nodes[selectedNode].actions[newName] = targetNode
+			else
+				outputLine = "Selected node is not connected to the specified node."
 			end
-			
-			for i = 1, #mark do
-				nodes[selectedNode].actions[mark[i]] = nil
-			end
-			
-			nodes[selectedNode].actions[newName] = targetNode
 		end
 	elseif command == "setspeedfactor" then
 		if not selectedNode then
