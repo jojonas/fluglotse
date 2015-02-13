@@ -1,4 +1,8 @@
-actionOrder = {"taxi", "cross", "takeoff", "gate1", "gate2"}
+actionOrder = {
+	"taxi", "cross", "takeoff", "gate1", "gate2", 
+	"gate3", "taxiStart1", "taxiStart2", "taxiStart3", "taxiGatesN", 
+	"taxiGatesS", "changeToRunway1", "changeToRunway2", "changeToRunway3", 
+}
 
 actions = {
 	["taxi"] = {
@@ -71,19 +75,9 @@ actions = {
 		message = "Cancel approach, change to runway 3",
 		shortcut = "e",
 	},
-	["holdForRunway1"] = {
+	["holdForRunway"] = {
 		name = "Hold for touchdown",
 		message = "Cancel approach, proceed with holding pattern",
 		shortcut = "a",
-	},
-	["holdForRunway2"] = {
-		name = "Hold for touchdown",
-		message = "Cancel approach, proceed with holding pattern",
-		shortcut = "s",
-	},
-	["holdForRunway3"] = {
-		name = "Hold for touchdown",
-		message = "Cancel approach, proceed with holding pattern",
-		shortcut = "d",
-	},
+	}
 }

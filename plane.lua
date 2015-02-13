@@ -65,7 +65,7 @@ function spawnPlane()
 		pos = {input.pos[1], input.pos[2], input.altitude},
 		drawPos = {input.pos[1], input.pos[2], input.altitude},
 		target = input.actions["auto"],
-		speed = 100,
+		speed = 70,
 		heading = 0,
 		nextAction = "auto",
 		spread = 60,

@@ -1,4 +1,5 @@
 return { 
+	metersPerPixel = 1.25,
 	["bounds"] = { 
 		[2] = { 
 			[2] = 860.88513673156, 
