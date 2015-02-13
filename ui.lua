@@ -14,6 +14,8 @@ local scrollButtonWidth = 20
 uiSelectedListElement = 1
 local uiListElementOffset = 0
 local lastLeftMouseDown = false
+local showKeyboardShortcuts = true
+local lastPressedMap = {}
 
 function getGameViewDimensions()
 	return love.window.getWidth(), love.window.getHeight() - uiHeight
@@ -50,7 +52,7 @@ function button(text, x, y, w, h)
 	return clicked
 end
 
-function toScreenCoordinates(mx, my)
+function toScreenCoordinates(wx, wy)
 	local map = currentMap 
 	
 	local w = map.bounds[2][1] - map.bounds[1][1]
@@ -58,7 +60,18 @@ function toScreenCoordinates(mx, my)
 	local gw, gh = getGameViewDimensions()
 	local scale = math.min(gh/h, gw/w)
 	
-	return (mx-w/2)*scale+gw/2, (my-h/2)*scale+gh/2
+	return (wx-w/2)*scale+gw/2, (wy-h/2)*scale+gh/2
+end
+
+function toWorldCoordinates(sx, sy)
+	local map = currentMap 
+	
+	local w = map.bounds[2][1] - map.bounds[1][1]
+	local h = map.bounds[2][2] - map.bounds[1][2]
+	local gw, gh = getGameViewDimensions()
+	local scale = math.min(gh/h, gw/w)
+	
+	return (sx-gw/2)/scale+w/2, (sy-gh/2)/scale+h/2
 end
 
 function drawUI()
@@ -94,7 +107,13 @@ function drawUI()
 		end
 		
 		love.graphics.setColor(255, 255, 255, 255)
-		love.graphics.printf(map.planes[i + uiListElementOffset].identifier, uiElementsMargin + listElementMargins, 
+		
+		local planeIndex = i + uiListElementOffset
+		local label = map.planes[planeIndex].identifier
+		if showKeyboardShortcuts and planeIndex <= 9 then
+			label = label .. " [" .. planeIndex .. "]"
+		end
+		love.graphics.printf(label, uiElementsMargin + listElementMargins, 
 									uiStartY + uiElementsMargin + listElementMargins + listElementHeight * (i-1) + 4, 
 									planeListWidth - listElementMargins*2 - scrollButtonWidth, "center")
 	end
@@ -119,8 +138,9 @@ function drawUI()
 					local w = buttonSizeW - buttonMargin
 					local h = buttonSizeH - buttonMargin
 					
-					if button(action.name, x, y, w, h) or love.keyboard.isDown(action.shortcut) then
-						selectedPlane.nextAction = actionId
+					local label = action.name .. (showKeyboardShortcuts and " [" .. action.shortcut .. "]" or "")
+					if button(label, x, y, w, h) or love.keyboard.isDown(action.shortcut) and not lastPressedMap[action.shortcut] then
+						activateAction(actionId)
 					end
 				end
 			end
@@ -128,11 +148,92 @@ function drawUI()
 		end
 	end
 	
+	for i = 1, #actionOrder do
+		local key = actions[actionOrder[i]].shortcut
+		lastPressedMap[key] = love.keyboard.isDown(key)
+	end
+	
 	lastLeftMouseDown = love.mouse.isDown("l")
 	
 	for i=1,#map.planes do
 		local plane = map.planes[i]
-		local x, y = toScreenCoordinates(plane.drawPos[1]-plane.size/2, plane.drawPos[2]-plane.size-5, plane.size, "center")
-		love.graphics.print(plane.identifier, x, y)
+		local x, y = toScreenCoordinates(plane.drawPos[1]-plane.hardRadius, plane.drawPos[2]-plane.hardRadius-5, plane.size, "center")
+		local label = plane.identifier 
+		if showKeyboardShortcuts and i <= 9 then
+			label = label .. " [" .. i .. "]"
+		end
+		love.graphics.print(label, x, y)
+	end
+end
+
+function activateAction(actionId) 
+	local selectedPlane = currentMap.planes[uiSelectedListElement]
+	if selectedPlane and selectedPlane.target.actions[actionId] ~= nil then
+		selectedPlane.nextAction = actionId
+		postMessage("Tower: " .. selectedPlane.identifier .. ", " .. actions[actionId].message)
+	end
+end
+
+
+
+function changeSelectedElementTo(val)
+	uiSelectedListElement = clamp(val , 1, #currentMap.planes)
+	
+	if uiSelectedListElement > uiListElementOffset+elementsInList then
+		uiListElementOffset = uiSelectedListElement-elementsInList
+	elseif uiSelectedListElement <= uiListElementOffset then
+		uiListElementOffset = uiSelectedListElement-1
+	end
+end
+
+function changeSelectedElementBy(val)
+	changeSelectedElementTo(uiSelectedListElement + val)
+end
+
+function love.mousepressed(x,y,button)
+	if button == "l" then
+		local wx, wy = toWorldCoordinates(x,y)
+		for i=1,#currentMap.planes do
+			local plane = currentMap.planes[i]
+			local dist = vectorNorm({wx-plane.pos[1], wy-plane.pos[2]})
+			if dist < plane.hardRadius then
+				uiSelectedListElement = i
+				break
+			end
+		end
+	end
+end
+
+function love.keypressed(key, isrepeat)
+	for i = 1, #actionOrder do
+		local actionId = actionOrder[i]
+		local shortcut = actions[actionId].shortcut
+		if key == shortcut then
+			activateAction(actionId)
+		end
+	end
+	
+	if key == " " then
+		currentMap.nextSpawnTime = love.timer.getTime() + 0.5
+	elseif key == "up" then
+		changeSelectedElementBy(-1)
+	elseif key == "down" then
+		changeSelectedElementBy(1)
+	elseif key == "pageup" then
+		changeSelectedElementBy(-elementsInList)
+	elseif key == "pagedown" then
+		changeSelectedElementBy(elementsInList)
+	elseif key == "home" then
+		changeSelectedElementTo(1)
+	elseif key == "end" then
+		changeSelectedElementTo(#currentMap.planes)
+	elseif key == "lalt" or key == "ralt" then
+		showKeyboardShortcuts = not showKeyboardShortcuts
+	else
+		for i=1,9 do
+			if key == tostring(i) or key == "kp" .. tostring(i) then
+				changeSelectedElementTo(i)
+			end
+		end
 	end
 end

@@ -30,6 +30,9 @@ function loadMap(map)
 		if node.queueing == nil then 
 			node.queueing = true
 		end
+		if node.altitude == nil then
+			node.altitude = 0
+		end
 	end
 	
 	currentMap = map

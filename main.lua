@@ -20,7 +20,7 @@ function love.run()
 
 	if love.load then love.load(arg) end
 
-	local dt = 1.0/60
+	local dt = 1.0/120
 	local simulationTime = love.timer.getTime()
 
 	-- Main loop time.
