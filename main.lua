@@ -6,6 +6,7 @@ require "map"
 require "plane"
 require "ui"
 require "actions"
+require "chat"
 
 function love.run()
 	if love.math then

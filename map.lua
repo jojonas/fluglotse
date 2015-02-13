@@ -4,6 +4,7 @@ currentMap = nil
 
 function loadMap(map) 
 	map.planes = {}
+	map.messages = {}
 	
 	for name, node in pairs(map.nodes) do
 		node.name = name

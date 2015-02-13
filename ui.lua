@@ -32,12 +32,22 @@ end
 
 function button(text, x, y, w, h)
 	local hovered = pointInRect({love.mouse.getPosition()}, {x, y, w, h})
+	local mousedown = hovered and love.mouse.isDown("l")
+	local clicked = mousedown and not lastLeftMouseDown
+	
+	if mousedown then
+		x = x + 1
+		y = y + 1
+		w = w - 2
+		h = h - 2
+	end
+	
 	local colors = hovered and hoverColors or {borderColor, fillerColor}
 	drawBorderRect(x, y, w, h, unpack(colors))
 	love.graphics.setColor(255, 255, 255, 255)
 	love.graphics.printf(text, x, y + h/2 - 7, w, "center")
 	
-	return hovered and love.mouse.isDown("l") and not lastLeftMouseDown
+	return clicked
 end
 
 function toScreenCoordinates(mx, my)

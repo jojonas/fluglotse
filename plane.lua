@@ -12,6 +12,33 @@ function generateIdentifier()
 	return randomCharacter() .. "-" .. tostring(love.math.random(0,99))
 end
 
+function planeIsAhead(planeA, planeB)
+	for _, target in pairs(planeB.target.actions) do
+		if target ~= planeB.target then
+			if target == planeA.target then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+function findFirstCollidingPlane(plane, nextPos, map)
+	for i=1,#map.planes do
+		local other = map.planes[i]
+		if other ~= plane then
+			local dist = vectorNorm({nextPos[1]-other.pos[1], nextPos[2]-other.pos[2]})
+			if dist < plane.size/2+other.size/2 then
+				return other
+			end
+		end
+	end
+end
+
+
+
+
+
 function spawnPlane()
 	local map = currentMap
 	local input = map.nodes[randomChoice(map.mapEntrances)]
@@ -67,28 +94,6 @@ function removePlane(plane)
 	end
 end
 
-function planeIsAhead(planeA, planeB)
-	for _, target in pairs(planeB.target.actions) do
-		if target ~= planeB.target then
-			if target == planeA.target then
-				return true
-			end
-		end
-	end
-	return false
-end
-
-function findFirstCollidingPlane(plane, nextPos, map)
-	for i=1,#map.planes do
-		local other = map.planes[i]
-		if other ~= plane then
-			local dist = vectorNorm({nextPos[1]-other.pos[1], nextPos[2]-other.pos[2]})
-			if dist < plane.size/2+other.size/2 then
-				return other
-			end
-		end
-	end
-end
 
 function updatePlane(plane, dt)
 	local map = currentMap
@@ -103,15 +108,13 @@ function updatePlane(plane, dt)
 			plane.pos[2] + speed * direction[2] * dt}
 		
 		local collidingPlane = findFirstCollidingPlane(plane, nextPos, map)
-		
-		
 		if not collidingPlane or (plane.target.queueing and plane.target ~= collidingPlane.target and planeIsAhead(plane, collidingPlane)) then
 			plane.pos[1] = nextPos[1]
 			plane.pos[2] = nextPos[2]
-		elseif collidingPlane and not plane.queueing then
+		elseif collidingPlane and not plane.target.queueing then
 			--removePlane(plane)
 			--removePlane(collidingPlane)
-			print("EXPLOSION!!!")
+			postMessage("Crash between " .. plane.identifier .. " and " .. collidingPlane.identifier .. "!")
 		end
 		
 	else -- arrived at target!
@@ -124,6 +127,15 @@ function updatePlane(plane, dt)
 		
 		local nxt = plane.target.actions[plane.nextAction]
 		assert(nxt, "Next action is undefined.")
+		if nxt == plane.target then
+			if not plane.promptSent then
+				postMessage(plane.identifier .. " : " .. randomChoice({"Ready.", "On your go.", "Waiting for your command."}))
+				plane.promptSent = true
+			end
+		else
+			plane.promptSent = nil
+		end 
+		
 		plane.target = nxt
 		plane.nextAction = "auto"
 	end
@@ -138,11 +150,6 @@ function updatePlane(plane, dt)
 		plane.heading = math.atan2(easeDirectionNormalized[2], easeDirectionNormalized[1])
 	end
 	
-	if collidingPlane and not plane.target.queueing then 
-		print("EXPLOSION")
-	else
-		
-	end
 end
 
 function drawPlane(plane, selected)

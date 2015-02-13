@@ -22,4 +22,5 @@ function love.draw()
 	love.graphics.pop()
 	
 	drawUI()
+	drawChat()
 end
