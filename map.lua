@@ -7,7 +7,10 @@ function loadMap(map)
 	map.messages = {}
 	
 	map.nextSpawnTime = love.timer.getTime()
-	map.image = love.graphics.newImage(map.imageFilename)
+	
+	if map.imageFilename then
+		map.image = love.graphics.newImage(map.imageFilename)
+	end
 	
 	if map.meterPerPixel == nil then
 		map.meterPerPixel = 1.0
@@ -61,12 +64,15 @@ function drawMap(map)
 	
 	local nodes = map.nodes
 	
-	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(map.image, map.bounds[1][1], map.bounds[1][2], 0, map.metersPerPixel, map.metersPerPixel)
 	
-	love.graphics.setColor(10,70,10,255)
+	--love.graphics.setColor(10,70,10,255)
 	--love.graphics.rectangle("fill", map.bounds[1][1], map.bounds[1][2], map.bounds[2][1]-map.bounds[1][1], map.bounds[2][2]-map.bounds[1][2])
 
+	if map.image then
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.draw(map.image, map.bounds[1][1], map.bounds[1][2], 0, map.metersPerPixel, map.metersPerPixel)
+	end
+	
 	love.graphics.setLineWidth(trackWidth)
 	love.graphics.setColor(100,100,100,255)
 	for name, node in pairs(nodes) do

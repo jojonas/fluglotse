@@ -1,8 +1,6 @@
 local nodeRadius = 10
 
 function love.load(arg)
-	print(io.popen"cd":read'*l')
-	
 	consoleInputLine = ""
 	outputLine = ""
 	backgroundImage = nil
@@ -16,8 +14,9 @@ function love.load(arg)
 	mapExits = {}
 	nodes = {}
 	map = {}
+	bounds = {}
 	
-	--interpretCommand("loadBackground:cyberspace.png")
+	if arg[2] then loadMap(arg[2]) end
 end
 
 function love.draw()
@@ -28,7 +27,25 @@ function love.draw()
 		
 		if backgroundImage then love.graphics.draw(backgroundImage) end
 		
+		if bounds[1] and bounds[2] then
+			love.graphics.setColor(255, 255, 255, 255)
+			love.graphics.rectangle("line", bounds[1][1], bounds[1][2], bounds[2][1] - bounds[1][1], bounds[2][2] - bounds[1][2])
+		end
+		
 		for k, v in pairs(nodes) do
+			love.graphics.setLineWidth(10)
+			love.graphics.setColor(255, 255, 0, 255)
+			for ak, av in pairs(v.actions) do
+				local rel = {nodes[av].pos[1] - v.pos[1], nodes[av].pos[2] - v.pos[2]}
+				local relLen = math.sqrt(rel[1]*rel[1] + rel[2]*rel[2])
+				rel = {rel[1]/relLen, rel[2]/relLen}
+				local ortho = {rel[2], -rel[1]}
+				local thickness = 7/camera.scale
+				love.graphics.polygon("fill", v.pos[1] + ortho[1]*thickness, v.pos[2] + ortho[2]*thickness, 
+														v.pos[1] - ortho[1]*thickness, v.pos[2] - ortho[2]*thickness, 
+														nodes[av].pos[1], nodes[av].pos[2])
+			end
+			
 			love.graphics.setColor(255, 0, 0, 255)
 			
 			if inSet(mapEntrances, k) then
@@ -50,19 +67,6 @@ function love.draw()
 			if v.queueing then
 				love.graphics.setColor(180, 180, 180, 255)
 				love.graphics.circle("fill", v.pos[1], v.pos[2], nodeRadius/camera.scale/2.0, 32)
-			end
-			
-			love.graphics.setLineWidth(10)
-			love.graphics.setColor(255, 255, 0, 255)
-			for ak, av in pairs(v.actions) do
-				local rel = {nodes[av].pos[1] - v.pos[1], nodes[av].pos[2] - v.pos[2]}
-				local relLen = math.sqrt(rel[1]*rel[1] + rel[2]*rel[2])
-				rel = {rel[1]/relLen, rel[2]/relLen}
-				local ortho = {rel[2], -rel[1]}
-				local thickness = 7/camera.scale
-				love.graphics.polygon("fill", v.pos[1] + ortho[1]*thickness, v.pos[2] + ortho[2]*thickness, 
-														v.pos[1] - ortho[1]*thickness, v.pos[2] - ortho[2]*thickness, 
-														nodes[av].pos[1], nodes[av].pos[2])
 			end
 		end
 	love.graphics.pop()
@@ -99,6 +103,7 @@ function saveMap(filename)
 		map.mapExits = mapExits
 		map.nodes = nodes
 		map.imageFilename = backgroundImageFilename
+		map.bounds = bounds
 		file:write("return " ..tableToString(map))
 		file:close()
 		outputLine = "Map file saved."
@@ -111,12 +116,15 @@ function loadMap(filename)
 	nodes = map.nodes
 	mapEntrances = map.mapEntrances
 	mapExits = map.mapExits
-	outputLine = "Map file loaded."
+	bounds = map.bounds
+	
 	backgroundImageFilename = map.imageFilename
 	if backgroundImageFilename then
 		backgroundImage = love.graphics.newImage(map.imageFilename)
 	end
 	saveFileName = filename
+	
+	outputLine = "Map file loaded."
 	
 	for k, v in pairs(nodes) do
 		if tonumber(k) and tonumber(k) > nameCounter then nameCounter = tonumber(k) end
@@ -266,7 +274,8 @@ function love.keypressed(key, isrepeat)
 		end
 		
 		if key == "b" then
-			
+			editMode = "setBounds"
+			outputLine = "bounds mode: left click to set upper left corner of bounding rectangle, right click to set lower right"
 		end
 		
 		if key == "r" then 
@@ -363,6 +372,14 @@ function love.mousepressed(x, y, button)
 	
 	if editMode == "connectNodes" and button == "r" and selectedNode and picked then
 		nodes[selectedNode].actions[getName()] = picked
+	end
+	
+	if editMode == "setBounds" then
+		if button == "l" then
+			bounds[1] = toWorldCoords(love.mouse.getPosition())
+		elseif button == "r" then
+			bounds[2] = toWorldCoords(love.mouse.getPosition())
+		end
 	end
 end
 
