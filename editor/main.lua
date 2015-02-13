@@ -11,6 +11,7 @@ function love.load(arg)
 	selectedNode = nil
 	nameCounter = 0
 	
+	backgroundImageFilename = nil
 	mapEntrances = {}
 	mapExits = {}
 	nodes = {}
@@ -57,7 +58,9 @@ function love.draw()
 				local relLen = math.sqrt(rel[1]*rel[1] + rel[2]*rel[2])
 				rel = {rel[1]/relLen, rel[2]/relLen}
 				local ortho = {rel[2], -rel[1]}
-				love.graphics.polygon("fill", v.pos[1] + ortho[1]*7, v.pos[2] + ortho[2]*7, v.pos[1] - ortho[1]*5, v.pos[2] - ortho[2]*5, 
+				local thickness = 7/camera.scale
+				love.graphics.polygon("fill", v.pos[1] + ortho[1]*thickness, v.pos[2] + ortho[2]*thickness, 
+														v.pos[1] - ortho[1]*thickness, v.pos[2] - ortho[2]*thickness, 
 														nodes[av].pos[1], nodes[av].pos[2])
 			end
 		end
@@ -94,6 +97,7 @@ function saveMap(filename)
 		map.mapEntrances = mapEntrances
 		map.mapExits = mapExits
 		map.nodes = nodes
+		map.imageFilename = backgroundImageFilename
 		file:write("return " ..tableToString(map))
 		file:close()
 		outputLine = "Map file saved."
@@ -107,6 +111,8 @@ function loadMap(filename)
 	mapEntrances = map.mapEntrances
 	mapExits = map.mapExits
 	outputLine = "Map file loaded."
+	backgroundImageFilename = map.imageFilename
+	backgroundImage = love.graphics.newImage(map.imageFilename)
 	
 	for k, v in pairs(nodes) do
 		if tonumber(k) and tonumber(k) > nameCounter then nameCounter = tonumber(k) end
@@ -127,6 +133,7 @@ function interpretCommand(str)
 	if command == "loadbackground" then
 		local filename = str:sub(findDelim+1)
 		backgroundImage = love.graphics.newImage(filename)
+		backgroundImageFilename = filename
 	elseif command == "setaction" then
 		if not selectedNode then
 			outputLine = "no node selected"
@@ -180,6 +187,14 @@ function interpretCommand(str)
 			
 			nodes[name] = nodes[selectedNode]
 			nodes[selectedNode] = nil
+			
+			for k, v in pairs(nodes) do
+				for ak, av in pairs(nodes[k].actions) do
+					if nodes[k].actions[ak] == selectedNode then
+						nodes[k].actions[ak] = name
+					end
+				end
+			end
 		end
 	elseif command == "save" then
 		local name = str:sub(findDelim+1)
