@@ -101,6 +101,14 @@ function loadMap(filename)
 	mapEntrances = map.mapEntrances
 	mapExits = map.mapExits
 	outputLine = "Map file loaded."
+	
+	for k, v in pairs(nodes) do
+		if tonumber(k) and tonumber(k) > nameCounter then nameCounter = tonumber(k) end
+		
+		for ak, av in pairs(nodes[k].actions) do
+			if tonumber(ak) and tonumber(ak) > nameCounter then nameCounter = tonumber(ak) end
+		end
+	end
 end
 
 function love.textinput(str)
@@ -312,6 +320,15 @@ function love.mousepressed(x, y, button)
 			selectedNode = nil
 			removeFromSet(mapEntrances, picked)
 			removeFromSet(mapExits, picked)
+			
+			for k, v in pairs(nodes) do
+				if ak, av in pairs(nodes[k].actions) do -- only works if nodes are a single time connected
+					if nodes[k].actions[ak] == picked then
+						nodes[k].actions[ak] = nil
+						break
+					end
+				end
+			end
 		end
 	end
 	
