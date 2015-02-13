@@ -115,6 +115,7 @@ function loadMap(filename)
 	if backgroundImageFilename then
 		backgroundImage = love.graphics.newImage(map.imageFilename)
 	end
+	saveFileName = filename
 	
 	for k, v in pairs(nodes) do
 		if tonumber(k) and tonumber(k) > nameCounter then nameCounter = tonumber(k) end
