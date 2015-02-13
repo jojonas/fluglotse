@@ -53,6 +53,7 @@ function love.draw()
 			end
 			
 			love.graphics.setLineWidth(10)
+			love.graphics.setColor(255, 255, 0, 255)
 			for ak, av in pairs(v.actions) do
 				local rel = {nodes[av].pos[1] - v.pos[1], nodes[av].pos[2] - v.pos[2]}
 				local relLen = math.sqrt(rel[1]*rel[1] + rel[2]*rel[2])
@@ -115,6 +116,7 @@ function loadMap(filename)
 	if backgroundImageFilename then
 		backgroundImage = love.graphics.newImage(map.imageFilename)
 	end
+	saveFileName = filename
 	
 	for k, v in pairs(nodes) do
 		if tonumber(k) and tonumber(k) > nameCounter then nameCounter = tonumber(k) end
