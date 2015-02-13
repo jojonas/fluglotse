@@ -8,10 +8,30 @@ function loadMap(map)
 	
 	map.nextSpawnTime = love.timer.getTime()
 	
+	if map.imageFilename then
+		map.image = love.graphics.newImage(map.imageFilename)
+	end
+	
+	if map.meterPerPixel == nil then
+		map.meterPerPixel = 1.0
+	end
+	
 	for name, node in pairs(map.nodes) do
 		node.name = name
 	end
 	
+	-- scale
+	map.bounds[1][1] = map.bounds[1][1] * map.metersPerPixel
+	map.bounds[2][1] = map.bounds[2][1] * map.metersPerPixel
+	map.bounds[1][2] = map.bounds[1][2] * map.metersPerPixel
+	map.bounds[2][2] = map.bounds[2][2] * map.metersPerPixel
+	for _, node in pairs(map.nodes) do
+		node.pos[1] = node.pos[1] * map.metersPerPixel
+		node.pos[2] = node.pos[2] * map.metersPerPixel
+	end
+		
+	-- prepare objects
+	-- fill tree with pointers
 	for name, node in pairs(map.nodes) do
 		if not node.actions then 
 			node.actions = {}
@@ -44,11 +64,17 @@ function drawMap(map)
 	
 	local nodes = map.nodes
 	
-	love.graphics.setColor({10,70,10})
-	love.graphics.rectangle("fill", map.bounds[1][1], map.bounds[1][2], map.bounds[2][1]-map.bounds[1][1], map.bounds[2][2]-map.bounds[1][2])
+	
+	--love.graphics.setColor(10,70,10,255)
+	--love.graphics.rectangle("fill", map.bounds[1][1], map.bounds[1][2], map.bounds[2][1]-map.bounds[1][1], map.bounds[2][2]-map.bounds[1][2])
 
+	if map.image then
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.draw(map.image, map.bounds[1][1], map.bounds[1][2], 0, map.metersPerPixel, map.metersPerPixel)
+	end
+	
 	love.graphics.setLineWidth(trackWidth)
-	love.graphics.setColor({100,100,100})
+	love.graphics.setColor(100,100,100,255)
 	for name, node in pairs(nodes) do
 		love.graphics.circle("fill", node.pos[1], node.pos[2], trackWidth/2, 20)
 

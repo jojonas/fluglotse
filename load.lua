@@ -3,6 +3,6 @@ function love.load()
 	love.window.setMode(w, h, {resizable=true, vsync=false})	
 	love.keyboard.setKeyRepeat(false)
 	
-	local map = loveDoFile("maps.lua")
+	local map = loveDoFile("editor/map.lua")
 	loadMap(map)
 end
