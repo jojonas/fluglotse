@@ -175,10 +175,11 @@ function drawPlaneLabel(plane)
 		label = label .. " [" .. index .. "]"
 	end
 	
-	local labelOffsetX, labelOffsetY = 50, 28
-	local x, y = toScreenCoordinates(plane.drawPos[1]-plane.hardRadius+labelOffsetX, plane.drawPos[2]-plane.hardRadius+labelOffsetY)
-	local dx = toScreenCoordinates(plane.drawPos[1]+plane.hardRadius+labelOffsetX, 0)
-	love.graphics.printf(label, x, y + 8 * (plane.labelOffsetCounter%2==0 and -1 or 1), dx - x, "center")
+	local stretch = 11.0
+	local x, y = toScreenCoordinates(plane.drawPos[1]-plane.hardRadius*stretch, plane.drawPos[2])
+	local dx = toScreenCoordinates(plane.drawPos[1]+plane.hardRadius*stretch, 0)
+	--love.graphics.circle("fill", x + (dx-x)/2, y, 10, 10)
+	love.graphics.printf(label, x, y + 12 * (plane.labelOffsetCounter%2==0 and -1 or 1) - love.graphics.getFont():getHeight()/2, dx - x, "center")
 end
 
 function activateAction(actionId) 
@@ -207,13 +208,17 @@ end
 
 function love.mousepressed(x,y,button)
 	if button == "l" then
-		local wx, wy = toWorldCoordinates(x,y)
-		for i=1,#currentMap.planes do
-			local plane = currentMap.planes[i]
-			local dist = vectorNorm({wx-plane.drawPos[1], wy-plane.drawPos[2]})
-			if dist < plane.hardRadius then
-				uiSelectedListElement = i
-				break
+		local w, h = getGameViewDimensions()
+		if x<w and y<h then
+			uiSelectedListElement = -1
+			local wx, wy = toWorldCoordinates(x,y)
+			for i=1,#currentMap.planes do
+				local plane = currentMap.planes[i]
+				local dist = vectorNorm({wx-plane.drawPos[1], wy-plane.drawPos[2]})
+				if dist < plane.hardRadius then
+					uiSelectedListElement = i
+					break
+				end
 			end
 		end
 	end

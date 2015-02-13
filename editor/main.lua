@@ -16,7 +16,7 @@ function love.load(arg)
 	nodes = {}
 	map = {}
 	
-	interpretCommand("loadBackground:cyberspace.png")
+	--interpretCommand("loadBackground:cyberspace.png")
 end
 
 function love.draw()
