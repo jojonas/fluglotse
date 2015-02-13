@@ -322,7 +322,7 @@ function love.mousepressed(x, y, button)
 			removeFromSet(mapExits, picked)
 			
 			for k, v in pairs(nodes) do
-				if ak, av in pairs(nodes[k].actions) do -- only works if nodes are a single time connected
+				for ak, av in pairs(nodes[k].actions) do -- only works if nodes are a single time connected
 					if nodes[k].actions[ak] == picked then
 						nodes[k].actions[ak] = nil
 						break
