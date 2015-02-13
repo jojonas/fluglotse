@@ -1,8 +1,6 @@
 local nodeRadius = 10
 
 function love.load(arg)
-	print(io.popen"cd":read'*l')
-	
 	consoleInputLine = ""
 	outputLine = ""
 	backgroundImage = nil
@@ -16,8 +14,9 @@ function love.load(arg)
 	mapExits = {}
 	nodes = {}
 	map = {}
+	bounds = {}
 	
-	interpretCommand("loadBackground:cyberspace.png")
+	if arg[2] then loadMap(arg[2]) end
 end
 
 function love.draw()
@@ -27,6 +26,11 @@ function love.draw()
 		love.graphics.translate(-camera.position[1], -camera.position[2])
 		
 		if backgroundImage then love.graphics.draw(backgroundImage) end
+		
+		if bounds[1] and bounds[2] then
+			love.graphics.setColor(255, 255, 255, 255)
+			love.graphics.rectangle("line", bounds[1][1], bounds[1][2], bounds[2][1] - bounds[1][1], bounds[2][2] - bounds[1][2])
+		end
 		
 		for k, v in pairs(nodes) do
 			love.graphics.setLineWidth(10)
@@ -99,6 +103,7 @@ function saveMap(filename)
 		map.mapExits = mapExits
 		map.nodes = nodes
 		map.imageFilename = backgroundImageFilename
+		map.bounds = bounds
 		file:write("return " ..tableToString(map))
 		file:close()
 		outputLine = "Map file saved."
@@ -111,12 +116,15 @@ function loadMap(filename)
 	nodes = map.nodes
 	mapEntrances = map.mapEntrances
 	mapExits = map.mapExits
-	outputLine = "Map file loaded."
+	bounds = map.bounds
+	
 	backgroundImageFilename = map.imageFilename
 	if backgroundImageFilename then
 		backgroundImage = love.graphics.newImage(map.imageFilename)
 	end
 	saveFileName = filename
+	
+	outputLine = "Map file loaded."
 	
 	for k, v in pairs(nodes) do
 		if tonumber(k) and tonumber(k) > nameCounter then nameCounter = tonumber(k) end
@@ -266,7 +274,8 @@ function love.keypressed(key, isrepeat)
 		end
 		
 		if key == "b" then
-			
+			editMode = "setBounds"
+			outputLine = "bounds mode: left click to set upper left corner of bounding rectangle, right click to set lower right"
 		end
 		
 		if key == "r" then 
@@ -363,6 +372,14 @@ function love.mousepressed(x, y, button)
 	
 	if editMode == "connectNodes" and button == "r" and selectedNode and picked then
 		nodes[selectedNode].actions[getName()] = picked
+	end
+	
+	if editMode == "setBounds" then
+		if button == "l" then
+			bounds[1] = toWorldCoords(love.mouse.getPosition())
+		elseif button == "r" then
+			bounds[2] = toWorldCoords(love.mouse.getPosition())
+		end
 	end
 end
 
