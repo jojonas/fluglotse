@@ -75,6 +75,7 @@ function spawnPlane()
 		softRadius = 60,
 		image = love.graphics.newImage("plane.png"),
 		shadowImage = love.graphics.newImage("plane_shadow.png"),
+		labelOffsetCounter = 1
 	}
 	
 	repeat 
@@ -98,7 +99,7 @@ end
 
 function getPlaneIndex(plane)
 	for i=1,#currentMap.planes do
-		if map.planes[i] == plane then
+		if currentMap.planes[i] == plane then
 			return i
 		end
 	end
@@ -129,9 +130,15 @@ function updatePlane(plane, dt)
 			plane.pos[2] + speed * direction[2] * dt, 
 			plane.pos[3] + speed * direction[3] * dt}
 		
+		local planeIndex = getPlaneIndex(plane)
 		local collidingPlanes = findAllCollidingPlanes(plane, nextPos, map)
 		for i=1,#collidingPlanes do
 			local collidingPlane = collidingPlanes[i] 
+			
+			local otherIndex = getPlaneIndex(collidingPlane)
+			local smallerIndex, largerIndex = math.min(planeIndex, otherIndex), math.max(planeIndex, otherIndex)
+			map.planes[largerIndex].labelOffsetCounter = map.planes[smallerIndex].labelOffsetCounter + 1
+			
 			if plane.target.queueing then
 				if plane.target == collidingPlane.target then
 					local distOther = planeDistanceToGo(collidingPlane)

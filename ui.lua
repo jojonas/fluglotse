@@ -155,15 +155,30 @@ function drawUI()
 	
 	lastLeftMouseDown = love.mouse.isDown("l")
 	
+	love.graphics.setColor(255, 255, 255, 255)
 	for i=1,#map.planes do
 		local plane = map.planes[i]
-		local x, y = toScreenCoordinates(plane.drawPos[1]-plane.hardRadius, plane.drawPos[2]-plane.hardRadius-5, plane.size, "center")
-		local label = plane.identifier 
-		if showKeyboardShortcuts and i <= 9 then
-			label = label .. " [" .. i .. "]"
-		end
-		love.graphics.print(label, x, y)
+		drawPlaneLabel(plane)
 	end
+	
+	
+	if uiSelectedListElement >= 1 and uiSelectedListElement <= #map.planes then
+		love.graphics.setColor(0, 255, 0, 255)
+		drawPlaneLabel(map.planes[uiSelectedListElement])
+	end
+end
+
+function drawPlaneLabel(plane)
+	local label = plane.identifier 
+	local index = getPlaneIndex(plane)
+	if showKeyboardShortcuts and index <= 9 then
+		label = label .. " [" .. index .. "]"
+	end
+	
+	local labelOffsetX, labelOffsetY = 50, 28
+	local x, y = toScreenCoordinates(plane.drawPos[1]-plane.hardRadius+labelOffsetX, plane.drawPos[2]-plane.hardRadius+labelOffsetY)
+	local dx = toScreenCoordinates(plane.drawPos[1]+plane.hardRadius+labelOffsetX, 0)
+	love.graphics.printf(label, x, y + 8 * (plane.labelOffsetCounter%2==0 and -1 or 1), dx - x, "center")
 end
 
 function activateAction(actionId) 
