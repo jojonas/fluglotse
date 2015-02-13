@@ -99,7 +99,8 @@ function love.draw()
 	
 	drawBoxText(editMode, love.window.getWidth() - 100, 10)
 	if selectedNode and nodes[selectedNode] then
-		drawBoxText(tableToString(nodes[selectedNode], "___"), love.window.getWidth() - 180, 30)
+		local width = 220
+		love.graphics.printf(tableToString(nodes[selectedNode], "___"), love.window.getWidth() - width, 30, width - 10)
 	end
 end
 
