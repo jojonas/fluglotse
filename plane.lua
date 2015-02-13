@@ -28,9 +28,6 @@ function findFirstCollidingPlane(plane, nextPos, map)
 		local other = map.planes[i]
 		if other ~= plane then
 			local dist = vectorNorm({nextPos[1]-other.pos[1], nextPos[2]-other.pos[2]})
-			postMessage("THIS: " .. nextPos[3])
-			postMessage("OTHER: " .. other.pos[3])
-			postMessage("Heights: " .. plane.height .. ", " .. other.height)
 			if dist < plane.size/2+other.size/2 then
 				if nextPos[3] > other.pos[3] then
 					if nextPos[3]-other.pos[3]<other.height then return other end
@@ -57,13 +54,13 @@ function spawnPlane()
 		pos = {input.pos[1], input.pos[2], input.altitude},
 		drawPos = {input.pos[1], input.pos[2], input.altitude},
 		target = input.actions["auto"],
-		speed = 500,
+		speed = 50,
 		heading = 0,
 		nextAction = "auto",
 		spread = 60,
 		length = 60,
 		height = 20,
-		size = 100, -- for selection box, labeling etc
+		size = 80, -- for selection box, labeling etc
 		image = love.graphics.newImage("plane.png"),
 		shadowImage = love.graphics.newImage("plane_shadow.png"),
 	}
@@ -171,10 +168,13 @@ function drawPlane(plane, selected)
 		end
 		-- drawing of identifier in drawUi!!!
 		
-		love.graphics.setColor({255,255,255})
+		
 		
 		local offset = 0.5*(plane.pos[3]+plane.height)
 		local shadowAngle = math.rad(45)
+		local alpha = clamp(255-plane.pos[3] ,50,255)
+		
+		love.graphics.setColor({255,255,255, alpha})
 		love.graphics.push()
 			love.graphics.translate(offset*math.sin(shadowAngle), offset*math.cos(shadowAngle))
 			local sx = plane.spread/plane.shadowImage:getWidth()/0.8
@@ -182,6 +182,7 @@ function drawPlane(plane, selected)
 			love.graphics.draw(plane.shadowImage, plane.drawPos[1], plane.drawPos[2], plane.heading+math.pi/2, sx, sy, plane.shadowImage:getWidth()/2, plane.shadowImage:getHeight()/2 )
 		love.graphics.pop()
 		
+		love.graphics.setColor({255,255,255,255})
 		local sx = plane.spread/plane.image:getWidth()/0.8
 		local sy = plane.length/plane.image:getHeight()/0.8
 		love.graphics.draw(plane.image, plane.drawPos[1], plane.drawPos[2], plane.heading+math.pi/2, sx, sy, plane.image:getWidth()/2, plane.image:getHeight()/2 )

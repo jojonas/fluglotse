@@ -22,3 +22,7 @@ end
 function loveDoFile(filename)
 	return assert(loadstring(love.filesystem.read(filename), filename))()
 end
+
+function clamp(value, low, hi)
+	return math.max(low, math.min(value, hi))
+end
