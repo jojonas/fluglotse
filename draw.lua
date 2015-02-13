@@ -1,3 +1,7 @@
+local explosionImage = love.graphics.newImage("explosion.png")
+explosionStart = nil
+explosionPosition = nil
+
 function love.draw()	
 	local map = currentMap
 	assert(map, "No map defined")
@@ -23,6 +27,14 @@ function love.draw()
 		for i=1,#currentMap.planes do
 			local plane = currentMap.planes[i]
 			drawPlane(plane, i==uiSelectedListElement)
+		end
+		
+		
+		if explosionPosition then 
+			local explosionScale = 0.3 * (love.timer.getTime() - explosionStart)
+			love.graphics.setColor(255, 255, 255, math.max(0, 255 - (love.timer.getTime() - explosionStart) * 130.0))
+			love.graphics.draw(explosionImage, explosionPosition[1], explosionPosition[2], 
+										0, explosionScale, explosionScale, explosionImage:getWidth()/2, explosionImage:getHeight()/2) 
 		end
 		love.graphics.setScissor()
 		
