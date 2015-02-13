@@ -1,7 +1,8 @@
 actionOrder = {
 	"taxi", "cross", "takeoff", "gate1", "gate2", 
 	"gate3", "taxiStart1", "taxiStart2", "taxiStart3", "taxiGatesN", 
-	"taxiGatesS", "changeToRunway1", "changeToRunway2", "changeToRunway3", 
+	"taxiGatesS", "changeToRunway1", "changeToRunway2", "changeToRunway3", "holdForRunway", 
+	"passGates",
 }
 
 actions = {
@@ -79,5 +80,11 @@ actions = {
 		name = "Hold for touchdown",
 		message = "Cancel approach, proceed with holding pattern",
 		shortcut = "a",
-	}
+	},
+	["passGates"] = {
+		name = "Pass Gates",
+		message = "Do not stop at gates, continue to runway out.",
+		shortcut = "x",
+	},
+	
 }

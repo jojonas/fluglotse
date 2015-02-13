@@ -24,6 +24,8 @@ function love.draw()
 			local plane = currentMap.planes[i]
 			drawPlane(plane, i==uiSelectedListElement)
 		end
+		drawSky(map)
+		
 		love.graphics.setScissor()
 		
 	love.graphics.pop()

@@ -2,6 +2,8 @@ require "maps"
 
 currentMap = nil
 
+local fogImage = love.graphics.newImage("fog.png")
+
 function loadMap(map) 
 	map.planes = {}
 	map.messages = {}
@@ -60,6 +62,27 @@ function loadMap(map)
 	end
 	
 	currentMap = map
+end
+
+function drawSky(map)
+	local w,h = map.bounds[2][1]-map.bounds[1][1], map.bounds[2][2]-map.bounds[1][2]
+	local x,y = 0,0
+
+	local wrap = (fogImage:getWidth() * map.metersPerPixel)
+	local dx = love.timer.getTime()*30 % wrap
+
+	x = -wrap
+	love.graphics.setBlendMode("subtractive")
+	love.graphics.setColor(255,255,255,50)
+	while x < w do
+		y = 0
+		while y < h do 
+			love.graphics.draw(fogImage, x+dx, y, 0, map.metersPerPixel, map.metersPerPixel)
+			x = x + fogImage:getWidth() * map.metersPerPixel
+			y = y + fogImage:getHeight() * map.metersPerPixel
+		end
+	end
+	love.graphics.setBlendMode("alpha")
 end
 
 function drawMap(map) 

@@ -188,7 +188,7 @@ function updatePlane(plane, dt)
 		plane.nextAction = "auto"
 	end
 	
-	local easeFactor = 6
+	local easeFactor = 3
 	local easeDirection = {plane.pos[1] - plane.drawPos[1], plane.pos[2] - plane.drawPos[2]}
 	plane.drawPos[1] = plane.drawPos[1] + easeFactor*easeDirection[1] * dt
 	plane.drawPos[2] = plane.drawPos[2] + easeFactor*easeDirection[2] * dt
