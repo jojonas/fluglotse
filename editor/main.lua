@@ -78,11 +78,11 @@ function love.draw()
 	
 	for k, v in pairs(nodes) do
 		local textCoord = toScreenCoords(unpack(v.pos))
-		drawBoxText(k, unpack(textCoord))
+		if tonumber(k) == nil then drawBoxText(k, unpack(textCoord)) end
 		
 		for ak, av in pairs(v.actions) do
 			local textCoord = toScreenCoords((v.pos[1] + nodes[av].pos[1])/2, (v.pos[2] + nodes[av].pos[2])/2)
-			drawBoxText(ak, unpack(textCoord))
+			if ak ~= "auto" then drawBoxText(ak, unpack(textCoord)) end
 		end
 	end
 	
