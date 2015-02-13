@@ -1,5 +1,5 @@
 local uiHeight = 200
-local planeListWidth = 200
+local planeListWidth = 100
 local borderColor = {0, 255, 0, 255}
 local fillerColor = {50, 50, 50, 255}
 local hoverColors = {borderColor, {100, 100, 100, 255}}
@@ -32,12 +32,33 @@ end
 
 function button(text, x, y, w, h)
 	local hovered = pointInRect({love.mouse.getPosition()}, {x, y, w, h})
+	local mousedown = hovered and love.mouse.isDown("l")
+	local clicked = mousedown and not lastLeftMouseDown
+	
+	if mousedown then
+		x = x + 1
+		y = y + 1
+		w = w - 2
+		h = h - 2
+	end
+	
 	local colors = hovered and hoverColors or {borderColor, fillerColor}
 	drawBorderRect(x, y, w, h, unpack(colors))
 	love.graphics.setColor(255, 255, 255, 255)
 	love.graphics.printf(text, x, y + h/2 - 7, w, "center")
 	
-	return hovered and love.mouse.isDown("l") and not lastLeftMouseDown
+	return clicked
+end
+
+function toScreenCoordinates(mx, my)
+	local map = currentMap 
+	
+	local w = map.bounds[2][1] - map.bounds[1][1]
+	local h = map.bounds[2][2] - map.bounds[1][2]
+	local gw, gh = getGameViewDimensions()
+	local scale = math.min(gh/h, gw/w)
+	
+	return (mx-w/2)*scale+gw/2, (my-h/2)*scale+gh/2
 end
 
 function drawUI()
@@ -54,7 +75,7 @@ function drawUI()
 	if button("/\\", scrollX, scrollY, scrollW, scrollH) then 
 		uiListElementOffset = math.max(uiListElementOffset - 1, 0) end
 	if button("\\/", scrollX, scrollY + scrollH, scrollW, scrollH) then 
-		uiListElementOffset = math.min(uiListElementOffset + 1, #map.planes - elementsInList) end
+		uiListElementOffset = math.max(0, math.min(uiListElementOffset + 1, #map.planes - elementsInList)) end
 	
 	drawBorderRect(uiElementsMargin, uiStartY + uiElementsMargin, planeListWidth - scrollButtonWidth, uiHeight - 2*uiElementsMargin, borderColor, fillerColor)
 	local listElementHeight = (uiHeight - uiElementsMargin * 2) / elementsInList
@@ -108,4 +129,10 @@ function drawUI()
 	end
 	
 	lastLeftMouseDown = love.mouse.isDown("l")
+	
+	for i=1,#map.planes do
+		local plane = map.planes[i]
+		local x, y = toScreenCoordinates(plane.drawPos[1]-plane.size/2, plane.drawPos[2]-plane.size-5, plane.size, "center")
+		love.graphics.print(plane.identifier, x, y)
+	end
 end

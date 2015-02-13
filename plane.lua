@@ -12,6 +12,33 @@ function generateIdentifier()
 	return randomCharacter() .. "-" .. tostring(love.math.random(0,99))
 end
 
+function planeIsAhead(planeA, planeB)
+	for _, target in pairs(planeB.target.actions) do
+		if target ~= planeB.target then
+			if target == planeA.target then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+function findFirstCollidingPlane(plane, nextPos, map)
+	for i=1,#map.planes do
+		local other = map.planes[i]
+		if other ~= plane then
+			local dist = vectorNorm({nextPos[1]-other.pos[1], nextPos[2]-other.pos[2]})
+			if dist < plane.size/2+other.size/2 then
+				return other
+			end
+		end
+	end
+end
+
+
+
+
+
 function spawnPlane()
 	local map = currentMap
 	local input = map.nodes[randomChoice(map.mapEntrances)]
@@ -23,10 +50,12 @@ function spawnPlane()
 		pos = {input.pos[1], input.pos[2]},
 		drawPos = {input.pos[1], input.pos[2]},
 		target = input.actions["auto"],
-		lastNode = input,
-		speed = 500,
+		speed = 100,
 		heading = 0,
-		nextAction = "auto"
+		nextAction = "auto",
+		spread = 60,
+		length = 60,
+		size = 100 -- for selection box, labeling etc
 	}
 	
 	repeat 
@@ -65,17 +94,32 @@ function removePlane(plane)
 	end
 end
 
+
 function updatePlane(plane, dt)
+	local map = currentMap
+	
 	local distanceToGo = vectorNorm({plane.target.pos[1] - plane.pos[1], plane.target.pos[2] - plane.pos[2]})
-	local stepDistance = plane.speed * dt
+	local speed = plane.speed * plane.target.speedFactor
+	local stepDistance = speed * dt
 	
 	if distanceToGo > stepDistance then -- prevent oscillations
 		local direction = planeDirection(plane)
-		plane.pos[1] = plane.pos[1] + plane.speed * direction[1] * dt
-		plane.pos[2] = plane.pos[2] + plane.speed * direction[2] * dt
-	else
-		for i=1,#currentMap.mapExits do
-			if plane.target.name == currentMap.mapExits[i] then
+		local nextPos = {plane.pos[1] + speed * direction[1] * dt, 
+			plane.pos[2] + speed * direction[2] * dt}
+		
+		local collidingPlane = findFirstCollidingPlane(plane, nextPos, map)
+		if not collidingPlane or (plane.target.queueing and plane.target ~= collidingPlane.target and planeIsAhead(plane, collidingPlane)) then
+			plane.pos[1] = nextPos[1]
+			plane.pos[2] = nextPos[2]
+		elseif collidingPlane and not plane.target.queueing then
+			--removePlane(plane)
+			--removePlane(collidingPlane)
+			postMessage("Crash between " .. plane.identifier .. " and " .. collidingPlane.identifier .. "!")
+		end
+		
+	else -- arrived at target!
+		for i=1,#map.mapExits do
+			if plane.target.name == map.mapExits[i] then
 				removePlane(plane)
 				return
 			end
@@ -83,6 +127,15 @@ function updatePlane(plane, dt)
 		
 		local nxt = plane.target.actions[plane.nextAction]
 		assert(nxt, "Next action is undefined.")
+		if nxt == plane.target then
+			if not plane.promptSent then
+				postMessage(plane.identifier .. " : " .. randomChoice({"Ready.", "On your go.", "Waiting for your command."}))
+				plane.promptSent = true
+			end
+		else
+			plane.promptSent = nil
+		end 
+		
 		plane.target = nxt
 		plane.nextAction = "auto"
 	end
@@ -96,6 +149,7 @@ function updatePlane(plane, dt)
 		local easeDirectionNormalized = vectorNormalized(easeDirection)
 		plane.heading = math.atan2(easeDirectionNormalized[2], easeDirectionNormalized[1])
 	end
+	
 end
 
 function drawPlane(plane, selected)
@@ -104,9 +158,10 @@ function drawPlane(plane, selected)
 		love.graphics.translate(plane.drawPos[1], plane.drawPos[2])
 		if selected then
 			love.graphics.setLineWidth(2)
-			love.graphics.rectangle("line", -50,-50,100,100)
+			love.graphics.circle("line", 0, 0, plane.size / 2, 20)
 		end
+		-- drawing of identifier in drawUi!!!
 		love.graphics.rotate(plane.heading)
-		love.graphics.polygon("fill", {30,0,-40,30,-40,-30})
+		love.graphics.polygon("fill", {plane.length/2,0,  -plane.length/2,plane.spread/2,  -plane.length/2,-plane.spread/2})
 	love.graphics.pop()
 end

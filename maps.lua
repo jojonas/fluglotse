@@ -2,6 +2,7 @@ return {
 	bounds = {{0,0},{2200,1600}},
 	mapEntrances = {"airIncoming"},
 	mapExits = {"airOutgoing"},
+	trafficFrequency = 1/5,
 	
 	nodes = {
 		["gate1"] = {
@@ -35,6 +36,8 @@ return {
 		["land"] = {
 			pos = {2000,600},
 			actions = {["auto"] = "fwdLand1"},
+			speedFactor = 13,
+			queueing = false,
 		},
 		["fwdLand1"] = {
 			pos = {2000,1000},
@@ -50,7 +53,9 @@ return {
 		},
 		["airOutgoing"] = {
 			pos = {2300,600},
-			actions = {}
+			actions = {},
+			speedFactor = 8,
+			queueing = false,
 		}
 	}
 }
