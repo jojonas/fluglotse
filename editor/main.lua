@@ -16,6 +16,10 @@ function love.load(arg)
 	map = {}
 	bounds = {}
 	
+	local w, h, flags = love.window.getMode()
+	flags.resizable = true
+	love.window.setMode(w, h, flags)
+		
 	if arg[2] then loadMap(arg[2]) end
 end
 
