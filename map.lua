@@ -6,6 +6,8 @@ function loadMap(map)
 	map.planes = {}
 	map.messages = {}
 	
+	map.nextSpawnTime = love.timer.getTime()
+	
 	for name, node in pairs(map.nodes) do
 		node.name = name
 	end
@@ -31,7 +33,6 @@ function loadMap(map)
 	end
 	
 	currentMap = map
-	spawnPlane()
 end
 
 function drawMap(map) 

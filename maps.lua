@@ -2,6 +2,7 @@ map1 = {
 	bounds = {{0,0},{2200,1600}},
 	mapEntrances = {"airIncoming"},
 	mapExits = {"airOutgoing"},
+	trafficFrequency = 1/5,
 	
 	nodes = {
 		["gate1"] = {
