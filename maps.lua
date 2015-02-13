@@ -1,4 +1,4 @@
-map1 = {
+return {
 	bounds = {{0,0},{2200,1600}},
 	mapEntrances = {"airIncoming"},
 	mapExits = {"airOutgoing"},
