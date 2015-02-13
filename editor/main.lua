@@ -112,7 +112,9 @@ function loadMap(filename)
 	mapExits = map.mapExits
 	outputLine = "Map file loaded."
 	backgroundImageFilename = map.imageFilename
-	backgroundImage = love.graphics.newImage(map.imageFilename)
+	if backgroundImageFilename then
+		backgroundImage = love.graphics.newImage(map.imageFilename)
+	end
 	
 	for k, v in pairs(nodes) do
 		if tonumber(k) and tonumber(k) > nameCounter then nameCounter = tonumber(k) end
@@ -259,6 +261,10 @@ function love.keypressed(key, isrepeat)
 	if love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") then
 		if key == "s" then
 			if saveFileName then saveMap(saveFileName) end
+		end
+		
+		if key == "b" then
+			
 		end
 		
 		if key == "r" then 
