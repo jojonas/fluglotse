@@ -1,5 +1,5 @@
 local maxMessages = 10
-local chatWidth = 400
+local chatWidth = 600
 local xMargin = 10
 local yMargin = 10
 
@@ -20,5 +20,5 @@ function drawChat()
 	for i=1,#currentMap.messages do
 		text = text .. currentMap.messages[i] .. "\n"
 	end
-	love.graphics.printf(text, love.graphics.getWidth() - chatWidth - xMargin, yMargin, chatWidth, "left")
+	love.graphics.printf(text, xMargin, yMargin, chatWidth, "left")
 end

@@ -13,9 +13,3 @@ function love.update(dt)
 		map.nextSpawnTime = map.nextSpawnTime + delta
 	end
 end
-
-function love.keypressed(key, isrepeat)
-	if key == " " then
-		spawnPlane()
-	end
-end
