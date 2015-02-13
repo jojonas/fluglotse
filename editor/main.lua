@@ -38,7 +38,8 @@ function love.draw()
 		
 		for k, v in pairs(nodes) do
 			love.graphics.setLineWidth(10)
-			love.graphics.setColor(255, 255, 0, 255)
+			
+			love.graphics.setColor(255, 255, selectedNode == k and 200 or 0, 255)
 			for ak, av in pairs(v.actions) do
 				local rel = {nodes[av].pos[1] - v.pos[1], nodes[av].pos[2] - v.pos[2]}
 				local relLen = math.sqrt(rel[1]*rel[1] + rel[2]*rel[2])
@@ -238,7 +239,6 @@ function interpretCommand(str)
 				outputLine = "altitude for node " .. selectedNode .. " set to: " .. tonumber(param)
 			end
 		end
-	end
 	elseif command == "save" then
 		local name = str:sub(findDelim+1)
 		saveMap(name)
