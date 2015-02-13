@@ -169,21 +169,24 @@ function interpretCommand(str)
 			local targetNode = params:sub(1, findAmp - 1)
 			
 			if nodes[targetNode] ~= nil then
-				local newName = params:sub(findAmp + 1)
-				
-				local currentName = nil
-				local mark = {}
-				for k, v in pairs(nodes[selectedNode].actions) do
-					if v == targetNode then
-						mark[#mark + 1] = k
+				if nodes[selectedNode] ~= nil then
+					local newName = params:sub(findAmp + 1)
+					
+					local currentName = nil
+					local mark = {}
+					for k, v in pairs(nodes[selectedNode].actions) do
+						if v == targetNode then
+							mark[#mark + 1] = k
+						end
 					end
-				end
-				
-				for i = 1, #mark do
-					nodes[selectedNode].actions[mark[i]] = nil
-				end
-				
-				nodes[selectedNode].actions[newName] = targetNode
+					
+					for i = 1, #mark do
+						nodes[selectedNode].actions[mark[i]] = nil
+					end
+					
+					nodes[selectedNode].actions[newName] = targetNode
+				else
+					outputLine = "Selected node does not exist anymore."
 			else
 				outputLine = "Selected node is not connected to the specified node."
 			end
