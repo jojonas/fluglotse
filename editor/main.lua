@@ -291,6 +291,13 @@ function love.keypressed(key, isrepeat)
 			if saveFileName then saveMap(saveFileName) end
 		end
 		
+		if key == " " then
+			if selectedNode then
+				local nextKey, nextNode = next(nodes[selectedNode].actions, nil)
+				selectedNode = nextNode
+			end
+		end
+		
 		if key == "b" then
 			editMode = "setBounds"
 			outputLine = "bounds mode: left click to set upper left corner of bounding rectangle, right click to set lower right"
