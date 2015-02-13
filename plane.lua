@@ -157,6 +157,10 @@ function updatePlane(plane, dt)
 				end
 			else 
 				postMessage("System", "Crash of " .. plane.identifier .. " and " .. collidingPlane.identifier .. "!")
+				if not explosionPosition then
+					explosionPosition = {(plane.pos[1] + collidingPlane.pos[1])/2, (plane.pos[2] + collidingPlane.pos[2])/2}
+					explosionStart = love.timer.getTime()
+				end
 			end
 		end
 		
