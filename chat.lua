@@ -3,19 +3,28 @@ local chatWidth = 600
 local xMargin = 10
 local yMargin = 10
 
-local colors = {
-	["System"] = {255, 0, 0},
-	["Tower"] = {255, 255, 255},
+local hsvColors = {
+	["System"] = {0, 255, 255, fix=true},
+	["Tower"] = {0, 0, 255, fix=true},
 }
 
-function colorFromName(name)
-	if not colors[name] then
-		repeat 
-			colors[name] = {love.math.random(0,255), love.math.random(0,255), love.math.random(0,255)}
-		until vectorNorm(colors[name]) > 100
+function colorFromName(name, bright)
+	if bright == nil then bright = false end
+	
+	assert(name, "Nil is not a name.")
+	if not hsvColors[name] then
+		local hue = love.math.random(0,255)
+		local saturation = 80
+		local value = 150
+		hsvColors[name] = {hue, saturation, value}
 	end
-	assert(colors[name], "Color hash not generated")
-	return colors[name]
+	
+	local hsv = hsvColors[name]
+	if bright and not hsv.fix then
+		return {hsvToRgb(hsv[1], 80, 255)}
+	else
+		return {hsvToRgb(unpack(hsv))}
+	end
 end
 
 function limitMessages(N)
@@ -36,7 +45,7 @@ function drawChat()
 	local lineIndex = 0
 	for i=1,#currentMap.messages do
 		local message = currentMap.messages[i]
-		love.graphics.setColor(colorFromName(message.source))
+		love.graphics.setColor(colorFromName(message.source, true))
 		local text = message.source .. ": " .. message.text
 		local _, lineCount = font:getWrap(text, chatWidth)
 		love.graphics.printf(text, xMargin, yMargin + font:getHeight() * lineIndex, chatWidth, "left")

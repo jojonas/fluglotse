@@ -1,6 +1,6 @@
 local uiHeight = 200
 local planeListWidth = 100
-local borderColor = {0, 255, 0, 255}
+local borderColor = {47,255,136,255}
 local fillerColor = {50, 50, 50, 255}
 local hoverColors = {borderColor, {100, 100, 100, 255}}
 local rectBorder = 1
@@ -163,7 +163,7 @@ function drawUI()
 	
 	
 	if uiSelectedListElement >= 1 and uiSelectedListElement <= #map.planes then
-		love.graphics.setColor(0, 255, 0, 255)
+		love.graphics.setColor(47,255,136,255)
 		drawPlaneLabel(map.planes[uiSelectedListElement])
 	end
 end
@@ -210,7 +210,7 @@ function love.mousepressed(x,y,button)
 		local wx, wy = toWorldCoordinates(x,y)
 		for i=1,#currentMap.planes do
 			local plane = currentMap.planes[i]
-			local dist = vectorNorm({wx-plane.pos[1], wy-plane.pos[2]})
+			local dist = vectorNorm({wx-plane.drawPos[1], wy-plane.drawPos[2]})
 			if dist < plane.hardRadius then
 				uiSelectedListElement = i
 				break
