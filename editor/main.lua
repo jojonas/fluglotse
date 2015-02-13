@@ -417,7 +417,7 @@ function love.mousepressed(x, y, button)
 		end
 	end
 	
-	if editMode == "connectNodes" and button == "r" and selectedNode and picked then
+	if editMode == "connectNodes" and button == "r" and selectedNode and picked and selectedNode ~= picked then
 		local name = tableElements(nodes[selectedNode].actions) == 0 and "auto" or getName()
 		nodes[selectedNode].actions[name] = picked
 	end
