@@ -98,6 +98,9 @@ function love.draw()
 	love.graphics.printf(outputLine, 5, love.window.getHeight() - shellHeight + 5, love.window.getWidth() - 10)
 	
 	drawBoxText(editMode, love.window.getWidth() - 100, 10)
+	if selectedNode and nodes[selectedNode] then
+		drawBoxText(tableToString(nodes[selectedNode], "___"), love.window.getWidth() - 180, 30)
+	end
 end
 
 function drawBoxText(text, x, y)
