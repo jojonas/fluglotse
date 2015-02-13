@@ -16,6 +16,10 @@ function love.load(arg)
 	map = {}
 	bounds = {}
 	
+	local w, h, flags = love.window.getMode()
+	flags.resizable = true
+	love.window.setMode(w, h, flags)
+		
 	if arg[2] then loadMap(arg[2]) end
 end
 
@@ -287,6 +291,13 @@ function love.keypressed(key, isrepeat)
 			if saveFileName then saveMap(saveFileName) end
 		end
 		
+		if key == " " then
+			if selectedNode then
+				local nextKey, nextNode = next(nodes[selectedNode].actions, nil)
+				selectedNode = nextNode
+			end
+		end
+		
 		if key == "b" then
 			editMode = "setBounds"
 			outputLine = "bounds mode: left click to set upper left corner of bounding rectangle, right click to set lower right"
@@ -385,7 +396,8 @@ function love.mousepressed(x, y, button)
 	end
 	
 	if editMode == "connectNodes" and button == "r" and selectedNode and picked then
-		nodes[selectedNode].actions[getName()] = picked
+		local name = tableElements(nodes[selectedNode].actions) == 0 and "auto" or getName()
+		nodes[selectedNode].actions[name] = picked
 	end
 	
 	if editMode == "setBounds" then
@@ -395,6 +407,12 @@ function love.mousepressed(x, y, button)
 			bounds[2] = toWorldCoords(love.mouse.getPosition())
 		end
 	end
+end
+
+function tableElements(table)
+	local num = 0
+	for k, v in pairs(table) do num = num + 1 end
+	return num
 end
 
 function boolsToInt(a, b)
