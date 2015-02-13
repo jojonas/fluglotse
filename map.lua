@@ -12,8 +12,12 @@ function loadMap(map)
 		map.image = love.graphics.newImage(map.imageFilename)
 	end
 	
-	if map.meterPerPixel == nil then
-		map.meterPerPixel = 1.0
+	if map.metersPerPixel == nil then
+		map.metersPerPixel = 1
+	end
+	
+	if map.trafficFrequency == nil then
+		map.trafficFrequency = 1/10
 	end
 	
 	for name, node in pairs(map.nodes) do
@@ -60,26 +64,26 @@ end
 
 function drawMap(map) 
 	assert(map, "No map defined")
-	local trackWidth = 45
+	local trackWidth = 2
 	
 	local nodes = map.nodes
 	
 	
-	--love.graphics.setColor(10,70,10,255)
-	--love.graphics.rectangle("fill", map.bounds[1][1], map.bounds[1][2], map.bounds[2][1]-map.bounds[1][1], map.bounds[2][2]-map.bounds[1][2])
+	love.graphics.setColor(10,70,10,255)
+	love.graphics.rectangle("fill", map.bounds[1][1], map.bounds[1][2], map.bounds[2][1]-map.bounds[1][1], map.bounds[2][2]-map.bounds[1][2])
 
 	if map.image then
 		love.graphics.setColor(255,255,255,255)
-		love.graphics.draw(map.image, map.bounds[1][1], map.bounds[1][2], 0, map.metersPerPixel, map.metersPerPixel)
+		love.graphics.draw(map.image, 0, 0, 0, map.metersPerPixel, map.metersPerPixel)
 	end
 	
-	love.graphics.setLineWidth(trackWidth)
-	love.graphics.setColor(100,100,100,255)
-	for name, node in pairs(nodes) do
-		love.graphics.circle("fill", node.pos[1], node.pos[2], trackWidth/2, 20)
+	--love.graphics.setLineWidth(trackWidth)
+	--love.graphics.setColor(255,255,255,255)
+	--for name, node in pairs(nodes) do
+	--	love.graphics.circle("fill", node.pos[1], node.pos[2], trackWidth/2, 20)
 
-		for _, nxt in pairs(node.actions) do
-			love.graphics.line(node.pos[1], node.pos[2], nxt.pos[1], nxt.pos[2])
-		end
-	end
+	--	for _, nxt in pairs(node.actions) do
+	--		love.graphics.line(node.pos[1], node.pos[2], nxt.pos[1], nxt.pos[2])
+	--	end
+	--end
 end

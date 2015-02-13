@@ -60,7 +60,7 @@ function toScreenCoordinates(wx, wy)
 	local gw, gh = getGameViewDimensions()
 	local scale = math.min(gh/h, gw/w)
 	
-	return (wx-w/2)*scale+gw/2, (wy-h/2)*scale+gh/2
+	return (wx-map.bounds[1][1]-w/2)*scale+gw/2, (wy-map.bounds[1][2]-h/2)*scale+gh/2
 end
 
 function toWorldCoordinates(sx, sy)
@@ -71,7 +71,7 @@ function toWorldCoordinates(sx, sy)
 	local gw, gh = getGameViewDimensions()
 	local scale = math.min(gh/h, gw/w)
 	
-	return (sx-gw/2)/scale+w/2, (sy-gh/2)/scale+h/2
+	return (sx-gw/2)/scale+w/2+map.bounds[1][1], (sy-gh/2)/scale+h/2+map.bounds[1][2]
 end
 
 function drawUI()
