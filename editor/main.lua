@@ -14,6 +14,7 @@ function love.load(arg)
 	mapEntrances = {}
 	mapExits = {}
 	nodes = {}
+	map = {}
 	
 	interpretCommand("loadBackground:cyberspace.png")
 end
@@ -84,13 +85,16 @@ function saveMap(filename)
 	if file == nil then
 		outputLine = "File '" .. filename .. "' could not be opened."
 	else
-		file:write("return " ..tableToString({mapEntrances = mapEntrances, mapExits = mapExits, nodes = nodes}))
+		map.mapEntrances = mapEntrances
+		map.mapExits = mapExits
+		map.nodes = nodes
+		file:write("return " ..tableToString(map))
 		file:close()
 	end
 end
 
 function loadMap(filename)
-	local map = dofile(filename)
+	map = dofile(filename)
 	nodes = map.nodes
 	mapEntrances = map.mapEntrances
 	mapExits = map.mapExits
