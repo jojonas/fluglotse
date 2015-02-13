@@ -29,6 +29,19 @@ function love.draw()
 		if backgroundImage then love.graphics.draw(backgroundImage) end
 		
 		for k, v in pairs(nodes) do
+			love.graphics.setLineWidth(10)
+			love.graphics.setColor(255, 255, 0, 255)
+			for ak, av in pairs(v.actions) do
+				local rel = {nodes[av].pos[1] - v.pos[1], nodes[av].pos[2] - v.pos[2]}
+				local relLen = math.sqrt(rel[1]*rel[1] + rel[2]*rel[2])
+				rel = {rel[1]/relLen, rel[2]/relLen}
+				local ortho = {rel[2], -rel[1]}
+				local thickness = 7/camera.scale
+				love.graphics.polygon("fill", v.pos[1] + ortho[1]*thickness, v.pos[2] + ortho[2]*thickness, 
+														v.pos[1] - ortho[1]*thickness, v.pos[2] - ortho[2]*thickness, 
+														nodes[av].pos[1], nodes[av].pos[2])
+			end
+			
 			love.graphics.setColor(255, 0, 0, 255)
 			
 			if inSet(mapEntrances, k) then
@@ -50,19 +63,6 @@ function love.draw()
 			if v.queueing then
 				love.graphics.setColor(180, 180, 180, 255)
 				love.graphics.circle("fill", v.pos[1], v.pos[2], nodeRadius/camera.scale/2.0, 32)
-			end
-			
-			love.graphics.setLineWidth(10)
-			love.graphics.setColor(255, 255, 0, 255)
-			for ak, av in pairs(v.actions) do
-				local rel = {nodes[av].pos[1] - v.pos[1], nodes[av].pos[2] - v.pos[2]}
-				local relLen = math.sqrt(rel[1]*rel[1] + rel[2]*rel[2])
-				rel = {rel[1]/relLen, rel[2]/relLen}
-				local ortho = {rel[2], -rel[1]}
-				local thickness = 7/camera.scale
-				love.graphics.polygon("fill", v.pos[1] + ortho[1]*thickness, v.pos[2] + ortho[2]*thickness, 
-														v.pos[1] - ortho[1]*thickness, v.pos[2] - ortho[2]*thickness, 
-														nodes[av].pos[1], nodes[av].pos[2])
 			end
 		end
 	love.graphics.pop()
