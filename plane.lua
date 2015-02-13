@@ -67,6 +67,16 @@ function removePlane(plane)
 	end
 end
 
+function planeIsAhead(planeA, planeB)
+	for _, target in pairs(planeB.target.actions) do
+		if target ~= planeB.target then
+			if target == planeA.target then
+				return true
+			end
+		end
+	end
+	return false
+end
 
 function findFirstCollidingPlane(plane, nextPos, map)
 	for i=1,#map.planes do
@@ -94,12 +104,13 @@ function updatePlane(plane, dt)
 		
 		local collidingPlane = findFirstCollidingPlane(plane, nextPos, map)
 		
-		if not collidingPlane or (plane.target.queueing and collidingPlane.target ~= plane.target) then
+		
+		if not collidingPlane or (plane.target.queueing and plane.target ~= collidingPlane.target and planeIsAhead(plane, collidingPlane)) then
 			plane.pos[1] = nextPos[1]
 			plane.pos[2] = nextPos[2]
 		elseif collidingPlane and not plane.queueing then
-			removePlane(plane)
-			removePlane(collidingPlane)
+			--removePlane(plane)
+			--removePlane(collidingPlane)
 			print("EXPLOSION!!!")
 		end
 		
@@ -126,8 +137,6 @@ function updatePlane(plane, dt)
 		local easeDirectionNormalized = vectorNormalized(easeDirection)
 		plane.heading = math.atan2(easeDirectionNormalized[2], easeDirectionNormalized[1])
 	end
-	
-	
 	
 	if collidingPlane and not plane.target.queueing then 
 		print("EXPLOSION")

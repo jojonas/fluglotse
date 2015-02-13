@@ -1,5 +1,5 @@
 local uiHeight = 200
-local planeListWidth = 200
+local planeListWidth = 100
 local borderColor = {0, 255, 0, 255}
 local fillerColor = {50, 50, 50, 255}
 local hoverColors = {borderColor, {100, 100, 100, 255}}
@@ -65,7 +65,7 @@ function drawUI()
 	if button("/\\", scrollX, scrollY, scrollW, scrollH) then 
 		uiListElementOffset = math.max(uiListElementOffset - 1, 0) end
 	if button("\\/", scrollX, scrollY + scrollH, scrollW, scrollH) then 
-		uiListElementOffset = math.min(uiListElementOffset + 1, #map.planes - elementsInList) end
+		uiListElementOffset = math.max(0, math.min(uiListElementOffset + 1, #map.planes - elementsInList)) end
 	
 	drawBorderRect(uiElementsMargin, uiStartY + uiElementsMargin, planeListWidth - scrollButtonWidth, uiHeight - 2*uiElementsMargin, borderColor, fillerColor)
 	local listElementHeight = (uiHeight - uiElementsMargin * 2) / elementsInList
