@@ -14,3 +14,7 @@ end
 function randomCharacter()
 	return string.char(love.math.random(string.byte("A"), string.byte("Z")))
 end
+
+function loveDoFile(filename)
+	return assert(loadstring(love.filesystem.read(filename), filename))()
+end
