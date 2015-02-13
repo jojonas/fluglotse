@@ -14,6 +14,7 @@ function love.load(arg)
 	mapEntrances = {}
 	mapExits = {}
 	nodes = {}
+	map = {}
 	
 	interpretCommand("loadBackground:cyberspace.png")
 end
@@ -84,16 +85,22 @@ function saveMap(filename)
 	if file == nil then
 		outputLine = "File '" .. filename .. "' could not be opened."
 	else
-		file:write("return " ..tableToString({mapEntrances = mapEntrances, mapExits = mapExits, nodes = nodes}))
+		map.mapEntrances = mapEntrances
+		map.mapExits = mapExits
+		map.nodes = nodes
+		file:write("return " ..tableToString(map))
 		file:close()
+		outputLine = "Map file saved."
+		saveFileName = filename
 	end
 end
 
 function loadMap(filename)
-	local map = dofile(filename)
+	map = dofile(filename)
 	nodes = map.nodes
 	mapEntrances = map.mapEntrances
 	mapExits = map.mapExits
+	outputLine = "Map file loaded."
 end
 
 function love.textinput(str)
@@ -221,6 +228,10 @@ function love.keypressed(key, isrepeat)
 	end
 	
 	if love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") then
+		if key == "s" then
+			if saveFileName then saveMap(saveFileName) end
+		end
+		
 		if key == "r" then 
 			editMode = "setReferenceKilometer" 
 			outputLine = "edit mode: set reference kilometer (drag&drop)"
