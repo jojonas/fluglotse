@@ -226,6 +226,19 @@ function interpretCommand(str)
 				end
 			end
 		end
+	elseif command == "setaltitude" then
+		if not selectedNode then
+			outputLine = "no node selected"
+		else
+			local param = str:sub(findDelim+1)
+			if param == "" then
+				outputLine = "Current altitude of node " .. selectedNode .. ": " .. (nodes[selectedNode].altitude or "default")
+			else
+				nodes[selectedNode].altitude = tonumber(param)
+				outputLine = "altitude for node " .. selectedNode .. " set to: " .. tonumber(param)
+			end
+		end
+	end
 	elseif command == "save" then
 		local name = str:sub(findDelim+1)
 		saveMap(name)
