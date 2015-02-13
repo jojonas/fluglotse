@@ -71,14 +71,13 @@ function love.draw()
 		end
 	love.graphics.pop()
 	
-	love.graphics.setColor(255, 255, 255, 255)
 	for k, v in pairs(nodes) do
 		local textCoord = toScreenCoords(unpack(v.pos))
-		love.graphics.printf(k, textCoord[1], textCoord[2], 200)
+		drawBoxText(k, unpack(textCoord))
 		
 		for ak, av in pairs(v.actions) do
 			local textCoord = toScreenCoords((v.pos[1] + nodes[av].pos[1])/2, (v.pos[2] + nodes[av].pos[2])/2)
-			love.graphics.printf(ak, textCoord[1], textCoord[2], 200)
+			drawBoxText(ak, unpack(textCoord))
 		end
 	end
 	
@@ -92,6 +91,16 @@ function love.draw()
 	love.graphics.setLineWidth(1)
 	love.graphics.line(0, love.window.getHeight() - shellHeight/2, love.window.getWidth(), love.window.getHeight() - shellHeight/2)
 	love.graphics.printf(outputLine, 5, love.window.getHeight() - shellHeight + 5, love.window.getWidth() - 10)
+	
+	drawBoxText(editMode, love.window.getWidth() - 100, 10)
+end
+
+function drawBoxText(text, x, y)
+	local textLen = 200
+	love.graphics.setColor(0, 0, 0, 255)
+	love.graphics.rectangle("fill", x, y, love.graphics.getFont():getWidth(text), love.graphics.getFont():getHeight())
+	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.printf(text, x, y, 200)
 end
 
 function saveMap(filename)
@@ -394,7 +403,7 @@ end
 
 function pickNode(x, y)
 	for k, v in pairs(nodes) do
-		if pointInCircle({x, y}, {nodes[k].pos[1], nodes[k].pos[2], nodeRadius}) then
+		if pointInCircle({x, y}, {nodes[k].pos[1], nodes[k].pos[2], nodeRadius/camera.scale}) then
 			return k
 		end
 	end
