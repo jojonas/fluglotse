@@ -89,7 +89,7 @@ function spawnPlane()
 	until unique
 	
 	assert(plane.target, "Plane has no target.")
-	postMessage(plane.identifier .. ": Incoming...")
+	postMessage(plane.identifier, "Incoming...")
 	
 	table.insert(map.planes, plane)
 	
@@ -148,7 +148,7 @@ function updatePlane(plane, dt)
 					-- stop
 				end
 			else 
-				postMessage("Crash of " .. plane.identifier .. " and " .. collidingPlane.identifier .. "!")
+				postMessage("System", "Crash of " .. plane.identifier .. " and " .. collidingPlane.identifier .. "!")
 			end
 		end
 		
@@ -159,7 +159,7 @@ function updatePlane(plane, dt)
 	else -- arrived at target!
 		for i=1,#map.mapExits do
 			if plane.target.name == map.mapExits[i] then
-				postMessage(plane.identifier .. ": Out!")
+				postMessage(plane.identifier, "Out!")
 				removePlane(plane)
 				return
 			end
@@ -169,7 +169,7 @@ function updatePlane(plane, dt)
 		assert(nxt, "Next action is undefined.")
 		if nxt == plane.target then
 			if not plane.promptSent then
-				postMessage(plane.identifier .. " : " .. randomChoice({"Ready.", "On your go.", "Waiting for your command."}))
+				postMessage(plane.identifier, randomChoice({"Ready.", "On your go.", "Waiting for your command."}))
 				plane.promptSent = true
 			end
 		else

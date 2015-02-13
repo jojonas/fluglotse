@@ -155,6 +155,7 @@ function drawUI()
 	
 	lastLeftMouseDown = love.mouse.isDown("l")
 	
+	love.graphics.setColor({255,255,255,255})
 	for i=1,#map.planes do
 		local plane = map.planes[i]
 		local x, y = toScreenCoordinates(plane.drawPos[1]-plane.hardRadius, plane.drawPos[2]-plane.hardRadius-5, plane.size, "center")
@@ -170,7 +171,7 @@ function activateAction(actionId)
 	local selectedPlane = currentMap.planes[uiSelectedListElement]
 	if selectedPlane and selectedPlane.target.actions[actionId] ~= nil then
 		selectedPlane.nextAction = actionId
-		postMessage("Tower: " .. selectedPlane.identifier .. ", " .. actions[actionId].message)
+		postMessage("Tower", selectedPlane.identifier .. ", " .. actions[actionId].message)
 	end
 end
 

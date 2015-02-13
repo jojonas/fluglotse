@@ -27,6 +27,7 @@ function love.run()
 	while true do
 		while simulationTime < love.timer.getTime() do
 			simulationTime = simulationTime + dt
+			
 			-- Process events.
 			if love.event then
 				love.event.pump()
@@ -43,8 +44,10 @@ function love.run()
 				end
 			end
 			
+			--local updateStart = love.timer.getTime()
 			-- Call update and draw
 			if love.update then love.update(dt) end 
+			--local delta = love.timer.getTime() - updateStart
 		end
 	
 		if love.window and love.graphics and love.window.isCreated() then
