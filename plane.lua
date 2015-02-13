@@ -1,5 +1,9 @@
 require "helpers"
 
+local planeImage = love.graphics.newImage("plane.png")
+local planeShadowImage = love.graphics.newImage("plane_shadow.png")
+local planeSelectionImage = love.graphics.newImage("plane_selection.png")
+
 function planeDirection(plane)
 	return vectorNormalized({plane.target.pos[1] - plane.pos[1], plane.target.pos[2] - plane.pos[2], plane.target.altitude - plane.pos[3]})
 end
@@ -50,10 +54,6 @@ function findAllCollidingPlanes(plane, nextPos, map, property)
 	return collisions
 end
 
-
-
-
-
 function spawnPlane()
 	local map = currentMap
 	local input = map.nodes[randomChoice(map.mapEntrances)]
@@ -73,8 +73,9 @@ function spawnPlane()
 		height = 20,
 		hardRadius = 40, -- for selection box, labeling etc
 		softRadius = 60,
-		image = love.graphics.newImage("plane.png"),
-		shadowImage = love.graphics.newImage("plane_shadow.png"),
+		image = planeImage,
+		shadowImage = planeShadowImage,
+		selectionImage = planeSelectionImage, 
 		labelOffsetCounter = 1
 	}
 	
@@ -90,7 +91,7 @@ function spawnPlane()
 	until unique
 	
 	assert(plane.target, "Plane has no target.")
-	postMessage(plane.identifier .. ": Incoming...")
+	postMessage(plane.identifier, "Incoming...")
 	
 	table.insert(map.planes, plane)
 	
@@ -155,7 +156,7 @@ function updatePlane(plane, dt)
 					-- stop
 				end
 			else 
-				postMessage("Crash of " .. plane.identifier .. " and " .. collidingPlane.identifier .. "!")
+				postMessage("System", "Crash of " .. plane.identifier .. " and " .. collidingPlane.identifier .. "!")
 			end
 		end
 		
@@ -166,7 +167,7 @@ function updatePlane(plane, dt)
 	else -- arrived at target!
 		for i=1,#map.mapExits do
 			if plane.target.name == map.mapExits[i] then
-				postMessage(plane.identifier .. ": Out!")
+				postMessage(plane.identifier, "Out!")
 				removePlane(plane)
 				return
 			end
@@ -176,7 +177,7 @@ function updatePlane(plane, dt)
 		assert(nxt, "Next action is undefined.")
 		if nxt == plane.target then
 			if not plane.promptSent then
-				postMessage(plane.identifier .. " : " .. randomChoice({"Ready.", "On your go.", "Waiting for your command."}))
+				postMessage(plane.identifier, randomChoice({"Ready.", "On your go.", "Waiting for your command."}))
 				plane.promptSent = true
 			end
 		else
@@ -201,11 +202,6 @@ end
 
 function drawPlane(plane, selected)
 	love.graphics.push()
-		love.graphics.setColor({255,0,0})
-		if selected then
-			love.graphics.setLineWidth(2)
-			love.graphics.circle("line", plane.drawPos[1], plane.drawPos[2], plane.hardRadius, 20)
-		end
 		-- drawing of identifier in drawUi!!!
 		
 		-- debug collision shapes
@@ -218,7 +214,7 @@ function drawPlane(plane, selected)
 		local shadowAngle = math.rad(45)
 		local alpha = clamp(255-plane.pos[3] ,50,255)
 		
-		love.graphics.setColor({255,255,255, alpha})
+		love.graphics.setColor(255,255,255, alpha)
 		love.graphics.push()
 			love.graphics.translate(offset*math.sin(shadowAngle), offset*math.cos(shadowAngle))
 			local sx = plane.spread/plane.shadowImage:getWidth()/0.8
@@ -226,7 +222,13 @@ function drawPlane(plane, selected)
 			love.graphics.draw(plane.shadowImage, plane.drawPos[1], plane.drawPos[2], plane.heading+math.pi/2, sx, sy, plane.shadowImage:getWidth()/2, plane.shadowImage:getHeight()/2 )
 		love.graphics.pop()
 		
-		love.graphics.setColor({255,255,255,255})
+		if selected then
+			love.graphics.setColor(47,255,136,255)
+			love.graphics.draw(plane.selectionImage, plane.drawPos[1], plane.drawPos[2], plane.heading+math.pi/2, sx, sy, plane.selectionImage:getWidth()/2, plane.selectionImage:getHeight()/2 )
+		end
+		
+		local color = colorFromName(plane.identifier)
+		love.graphics.setColor(color[1], color[2], color[3], 255)
 		local sx = plane.spread/plane.image:getWidth()/0.8
 		local sy = plane.length/plane.image:getHeight()/0.8
 		love.graphics.draw(plane.image, plane.drawPos[1], plane.drawPos[2], plane.heading+math.pi/2, sx, sy, plane.image:getWidth()/2, plane.image:getHeight()/2 )
