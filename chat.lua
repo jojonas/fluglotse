@@ -1,5 +1,5 @@
 local maxMessages = 10
-local chatWidth = 200
+local chatWidth = 400
 local xMargin = 10
 local yMargin = 10
 

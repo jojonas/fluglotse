@@ -1,7 +1,7 @@
 require "helpers"
 
 function planeDirection(plane)
-	return vectorNormalized({plane.target.pos[1] - plane.pos[1], plane.target.pos[2] - plane.pos[2]})
+	return vectorNormalized({plane.target.pos[1] - plane.pos[1], plane.target.pos[2] - plane.pos[2], plane.target.altitude - plane.pos[3]})
 end
 
 function printPlane(plane)
@@ -28,8 +28,15 @@ function findFirstCollidingPlane(plane, nextPos, map)
 		local other = map.planes[i]
 		if other ~= plane then
 			local dist = vectorNorm({nextPos[1]-other.pos[1], nextPos[2]-other.pos[2]})
+			postMessage("THIS: " .. nextPos[3])
+			postMessage("OTHER: " .. other.pos[3])
+			postMessage("Heights: " .. plane.height .. ", " .. other.height)
 			if dist < plane.size/2+other.size/2 then
-				return other
+				if nextPos[3] > other.pos[3] then
+					if nextPos[3]-other.pos[3]<other.height then return other end
+				else 
+					if other.pos[3]-nextPos[3]<plane.height then return other end
+				end
 			end
 		end
 	end
@@ -47,15 +54,18 @@ function spawnPlane()
 	
 	local plane = {
 		identifier = "",
-		pos = {input.pos[1], input.pos[2]},
-		drawPos = {input.pos[1], input.pos[2]},
+		pos = {input.pos[1], input.pos[2], input.altitude},
+		drawPos = {input.pos[1], input.pos[2], input.altitude},
 		target = input.actions["auto"],
-		speed = 100,
+		speed = 500,
 		heading = 0,
 		nextAction = "auto",
 		spread = 60,
 		length = 60,
-		size = 100 -- for selection box, labeling etc
+		height = 20,
+		size = 100, -- for selection box, labeling etc
+		image = love.graphics.newImage("plane.png"),
+		shadowImage = love.graphics.newImage("plane_shadow.png"),
 	}
 	
 	repeat 
@@ -104,19 +114,19 @@ function updatePlane(plane, dt)
 	
 	if distanceToGo > stepDistance then -- prevent oscillations
 		local direction = planeDirection(plane)
+		
 		local nextPos = {plane.pos[1] + speed * direction[1] * dt, 
-			plane.pos[2] + speed * direction[2] * dt}
+			plane.pos[2] + speed * direction[2] * dt, 
+			plane.pos[3] + speed * direction[3] * dt}
 		
 		local collidingPlane = findFirstCollidingPlane(plane, nextPos, map)
 		if not collidingPlane or (plane.target.queueing and plane.target ~= collidingPlane.target and planeIsAhead(plane, collidingPlane)) then
 			plane.pos[1] = nextPos[1]
 			plane.pos[2] = nextPos[2]
+			plane.pos[3] = nextPos[3]
 		elseif collidingPlane and not plane.target.queueing then
-			--removePlane(plane)
-			--removePlane(collidingPlane)
 			postMessage("Crash between " .. plane.identifier .. " and " .. collidingPlane.identifier .. "!")
 		end
-		
 	else -- arrived at target!
 		for i=1,#map.mapExits do
 			if plane.target.name == map.mapExits[i] then
@@ -155,13 +165,25 @@ end
 function drawPlane(plane, selected)
 	love.graphics.push()
 		love.graphics.setColor({255,0,0})
-		love.graphics.translate(plane.drawPos[1], plane.drawPos[2])
 		if selected then
 			love.graphics.setLineWidth(2)
-			love.graphics.circle("line", 0, 0, plane.size / 2, 20)
+			love.graphics.circle("line", plane.drawPos[1], plane.drawPos[2], plane.size / 2, 20)
 		end
 		-- drawing of identifier in drawUi!!!
-		love.graphics.rotate(plane.heading)
-		love.graphics.polygon("fill", {plane.length/2,0,  -plane.length/2,plane.spread/2,  -plane.length/2,-plane.spread/2})
+		
+		love.graphics.setColor({255,255,255})
+		
+		local offset = 0.5*(plane.pos[3]+plane.height)
+		local shadowAngle = math.rad(45)
+		love.graphics.push()
+			love.graphics.translate(offset*math.sin(shadowAngle), offset*math.cos(shadowAngle))
+			local sx = plane.spread/plane.shadowImage:getWidth()/0.8
+			local sy = plane.length/plane.shadowImage:getHeight()/0.8
+			love.graphics.draw(plane.shadowImage, plane.drawPos[1], plane.drawPos[2], plane.heading+math.pi/2, sx, sy, plane.shadowImage:getWidth()/2, plane.shadowImage:getHeight()/2 )
+		love.graphics.pop()
+		
+		local sx = plane.spread/plane.image:getWidth()/0.8
+		local sy = plane.length/plane.image:getHeight()/0.8
+		love.graphics.draw(plane.image, plane.drawPos[1], plane.drawPos[2], plane.heading+math.pi/2, sx, sy, plane.image:getWidth()/2, plane.image:getHeight()/2 )
 	love.graphics.pop()
 end

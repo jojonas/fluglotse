@@ -14,6 +14,7 @@ local scrollButtonWidth = 20
 uiSelectedListElement = 1
 local uiListElementOffset = 0
 local lastLeftMouseDown = false
+local lastPressedMap = {}
 
 function getGameViewDimensions()
 	return love.window.getWidth(), love.window.getHeight() - uiHeight
@@ -50,7 +51,7 @@ function button(text, x, y, w, h)
 	return clicked
 end
 
-function toScreenCoordinates(mx, my)
+function toScreenCoordinates(wx, wy)
 	local map = currentMap 
 	
 	local w = map.bounds[2][1] - map.bounds[1][1]
@@ -58,7 +59,18 @@ function toScreenCoordinates(mx, my)
 	local gw, gh = getGameViewDimensions()
 	local scale = math.min(gh/h, gw/w)
 	
-	return (mx-w/2)*scale+gw/2, (my-h/2)*scale+gh/2
+	return (wx-w/2)*scale+gw/2, (wy-h/2)*scale+gh/2
+end
+
+function toWorldCoordinates(sx, sy)
+	local map = currentMap 
+	
+	local w = map.bounds[2][1] - map.bounds[1][1]
+	local h = map.bounds[2][2] - map.bounds[1][2]
+	local gw, gh = getGameViewDimensions()
+	local scale = math.min(gh/h, gw/w)
+	
+	return (sx-gw/2)/scale+w/2, (sy-gh/2)/scale+h/2
 end
 
 function drawUI()
@@ -119,13 +131,19 @@ function drawUI()
 					local w = buttonSizeW - buttonMargin
 					local h = buttonSizeH - buttonMargin
 					
-					if button(action.name, x, y, w, h) or love.keyboard.isDown(action.shortcut) then
+					if button(action.name .. " [" .. action.shortcut .. "]", x, y, w, h) or love.keyboard.isDown(action.shortcut) and not lastPressedMap[action.shortcut] then
 						selectedPlane.nextAction = actionId
+						postMessage("Tower: " .. selectedPlane.identifier .. ", " .. action.message)
 					end
 				end
 			end
 			buttonIndex = buttonIndex + 1
 		end
+	end
+	
+	for i = 1, #actionOrder do
+		local key = actions[actionOrder[i]].shortcut
+		lastPressedMap[key] = love.keyboard.isDown(key)
 	end
 	
 	lastLeftMouseDown = love.mouse.isDown("l")
@@ -134,5 +152,19 @@ function drawUI()
 		local plane = map.planes[i]
 		local x, y = toScreenCoordinates(plane.drawPos[1]-plane.size/2, plane.drawPos[2]-plane.size-5, plane.size, "center")
 		love.graphics.print(plane.identifier, x, y)
+	end
+end
+
+function love.mousepressed(x,y,button)
+	if button == "l" then
+		local wx, wy = toWorldCoordinates(x,y)
+		for i=1,#currentMap.planes do
+			local plane = currentMap.planes[i]
+			local dist = vectorNorm({wx-plane.pos[1], wy-plane.pos[2]})
+			if dist < plane.size/2 then
+				uiSelectedListElement = i
+				break
+			end
+		end
 	end
 end
