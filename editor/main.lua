@@ -187,6 +187,7 @@ function interpretCommand(str)
 					nodes[selectedNode].actions[newName] = targetNode
 				else
 					outputLine = "Selected node does not exist anymore."
+				end
 			else
 				outputLine = "Selected node is not connected to the specified node."
 			end
