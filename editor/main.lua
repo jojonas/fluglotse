@@ -1,4 +1,4 @@
-local nodeRadius = 20
+local nodeRadius = 10
 
 function love.load(arg)
 	print(io.popen"cd":read'*l')
@@ -38,11 +38,17 @@ function love.draw()
 				love.graphics.setColor(0, 255, 0, 255)
 			end
 			
-			love.graphics.circle("fill", v.pos[1], v.pos[2], nodeRadius, 32)
+			love.graphics.circle("fill", v.pos[1], v.pos[2], nodeRadius/camera.scale, 32)
 			
 			love.graphics.setLineWidth(1)
 			if selectedNode == k then
-				love.graphics.rectangle("line", v.pos[1] - nodeRadius, v.pos[2] - nodeRadius, nodeRadius*2, nodeRadius*2)
+				local size = nodeRadius/camera.scale*2.0
+				love.graphics.rectangle("line", v.pos[1] - size/2, v.pos[2] - size/2, size, size)
+			end
+			
+			if v.queueing then
+				love.graphics.setColor(180, 180, 180, 255)
+				love.graphics.circle("fill", v.pos[1], v.pos[2], nodeRadius/camera.scale/2.0, 32)
 			end
 			
 			love.graphics.setLineWidth(10)
@@ -60,7 +66,7 @@ function love.draw()
 	love.graphics.setColor(255, 255, 255, 255)
 	for k, v in pairs(nodes) do
 		local textCoord = toScreenCoords(unpack(v.pos))
-		love.graphics.printf(k .. (v.queueing and " - queueing" or " - not queueing"), textCoord[1], textCoord[2], 200)
+		love.graphics.printf(k, textCoord[1], textCoord[2], 200)
 		
 		for ak, av in pairs(v.actions) do
 			local textCoord = toScreenCoords((v.pos[1] + nodes[av].pos[1])/2, (v.pos[2] + nodes[av].pos[2])/2)
@@ -312,7 +318,7 @@ function love.mousepressed(x, y, button)
 	
 	if editMode == "addNodes" then
 		if not picked and button == "l" then
-			nodes[getName()] = {pos = toWorldCoords(x, y), actions = {}}
+			nodes[getName()] = {pos = toWorldCoords(x, y), actions = {}, queueing = true}
 		end
 		
 		if button == "r" and picked then
