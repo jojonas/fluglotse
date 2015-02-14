@@ -1,5 +1,4 @@
 return { 
-	metersPerPixel = 1.25,
 	["bounds"] = { 
 		[2] = { 
 			[2] = 860.88513673156, 
@@ -10,6 +9,7 @@ return {
 			[1] = 38.802462069062, 
 		}, 
 	}, 
+	["metersPerPixel"] = 1.25, 
 	["mapExits"] = { 
 		[1] = "41", 
 		[2] = "40", 
@@ -67,11 +67,12 @@ return {
 			["altitude"] = 300, 
 		}, 
 		["157"] = { 
-			["queueing"] = false, 
 			["pos"] = { 
 				[1] = 840.46831992314, 
 				[2] = 57.116071796663, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
 				["auto"] = "148", 
 			}, 
@@ -97,24 +98,14 @@ return {
 				["auto"] = "mergeSouth", 
 			}, 
 		}, 
-		["takeoff3"] = { 
-			["queueing"] = false, 
+		["toRallyOutGatesN3"] = { 
+			["queueing"] = true, 
 			["pos"] = { 
-				[2] = 510.69961635499, 
-				[1] = 1394.9293269758, 
+				[1] = 1511.9221167796, 
+				[2] = 219.36714090402, 
 			}, 
 			["actions"] = { 
-				["auto"] = "41", 
-			}, 
-		}, 
-		["158"] = { 
-			["queueing"] = false, 
-			["pos"] = { 
-				[2] = 381.27829232653, 
-				[1] = 1168.5888864113, 
-			}, 
-			["actions"] = { 
-				["auto"] = "13", 
+				["auto"] = "rallyOutGatesN", 
 			}, 
 		}, 
 		["13"] = { 
@@ -126,13 +117,15 @@ return {
 			["actions"] = { 
 				["auto"] = "12", 
 			}, 
+			["speedFactor"] = 1.5, 
 		}, 
 		["145"] = { 
-			["queueing"] = false, 
 			["pos"] = { 
 				[1] = 1140.3507269106, 
 				[2] = 59.712456272745, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
 				["auto"] = "157", 
 			}, 
@@ -158,6 +151,18 @@ return {
 				["auto"] = "decideEast", 
 			}, 
 		}, 
+		["holdRunway2"] = { 
+			["pos"] = { 
+				[2] = 339.84894010763, 
+				[1] = 630.39681722649, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "245", 
+			}, 
+			["altitude"] = 100, 
+		}, 
 		["83"] = { 
 			["queueing"] = true, 
 			["pos"] = { 
@@ -168,15 +173,17 @@ return {
 				["start"] = "takeoff2", 
 			}, 
 		}, 
-		["gateN2"] = { 
-			["queueing"] = true, 
+		["245"] = { 
 			["pos"] = { 
-				[1] = 1361.5003182259, 
-				[2] = 62.626280165309, 
+				[2] = 262.71514121577, 
+				[1] = 656.96512573369, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
-				["taxi"] = "rallyOutGatesN", 
+				["auto"] = "246", 
 			}, 
+			["altitude"] = 100, 
 		}, 
 		["toGatesS"] = { 
 			["queueing"] = true, 
@@ -191,11 +198,11 @@ return {
 		["gateN1"] = { 
 			["queueing"] = true, 
 			["pos"] = { 
-				[1] = 1230.4808193058, 
-				[2] = 60.562980969717, 
+				[1] = 1237.9594736424, 
+				[2] = 132.72082049683, 
 			}, 
 			["actions"] = { 
-				["taxi"] = "rallyOutGatesN", 
+				["auto"] = "217", 
 			}, 
 		}, 
 		["decideWest"] = { 
@@ -209,38 +216,31 @@ return {
 				["taxiStart2"] = "sToStart2", 
 			}, 
 		}, 
-		["targetRunway2"] = { 
-			["queueing"] = false, 
+		["233"] = { 
 			["pos"] = { 
-				[1] = 831.65752915838, 
-				[2] = 395.43359075979, 
+				[2] = 843.66712018244, 
+				[1] = 142.20450153067, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
-				["auto"] = "land2threshold", 
+				["auto"] = "242", 
 			}, 
+			["altitude"] = 100, 
 		}, 
 		["decideRunway3"] = { 
-			["queueing"] = false, 
 			["pos"] = { 
 				[1] = 492.5528001281, 
 				[2] = 537.4471998719, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
 				["changeToRunway2"] = "targetRunway2", 
+				["holdForRunway"] = "holdRunway3", 
 				["auto"] = "targetRunway3", 
 			}, 
 			["altitude"] = 100, 
-		}, 
-		["150"] = { 
-			["queueing"] = false, 
-			["pos"] = { 
-				[1] = 1145.5434958628, 
-				[2] = 120.72749146068, 
-			}, 
-			["actions"] = { 
-				["auto"] = "151", 
-			}, 
-			["altitude"] = 80, 
 		}, 
 		["land3End"] = { 
 			["queueing"] = false, 
@@ -251,26 +251,7 @@ return {
 			["actions"] = { 
 				["auto"] = "5", 
 			}, 
-		}, 
-		["land2threshold"] = { 
-			["queueing"] = false, 
-			["pos"] = { 
-				[2] = 404.52876197124, 
-				[1] = 1103.376245527, 
-			}, 
-			["actions"] = { 
-				["auto"] = "land2End", 
-			}, 
-		}, 
-		["gateN3"] = { 
-			["queueing"] = true, 
-			["pos"] = { 
-				[1] = 1499.7413643305, 
-				[2] = 62.626280165309, 
-			}, 
-			["actions"] = { 
-				["taxi"] = "rallyOutGatesN", 
-			}, 
+			["speedFactor"] = 1.5, 
 		}, 
 		["37"] = { 
 			["queueing"] = false, 
@@ -283,14 +264,249 @@ return {
 			}, 
 			["altitude"] = 300, 
 		}, 
-		["148"] = { 
+		["takeoff2"] = { 
 			["queueing"] = false, 
 			["pos"] = { 
-				[1] = 673.00152121583, 
-				[2] = 232.37202393222, 
+				[2] = 403.44233481364, 
+				[1] = 1473.2193772403, 
 			}, 
 			["actions"] = { 
-				["auto"] = "targetRunway2", 
+				["auto"] = "40", 
+			}, 
+		}, 
+		["225"] = { 
+			["queueing"] = false, 
+			["pos"] = { 
+				[1] = 93.169592599968, 
+				[2] = -112.92676880683, 
+			}, 
+			["actions"] = { 
+				["auto"] = "targetRunway1", 
+			}, 
+			["altitude"] = 300, 
+		}, 
+		["holdRunway3"] = { 
+			["pos"] = { 
+				[2] = 552.56217309631, 
+				[1] = 604.84072550618, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "240", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["29"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[1] = 1796.0255742589, 
+				[2] = 700.30434530024, 
+			}, 
+			["actions"] = { 
+				["auto"] = "mergeSouth", 
+			}, 
+		}, 
+		["toGateN2"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[1] = 1458.3316180306, 
+				[2] = 292.49062517829, 
+			}, 
+			["actions"] = { 
+				["auto"] = "gateN2", 
+			}, 
+		}, 
+		["land2End"] = { 
+			["queueing"] = false, 
+			["pos"] = { 
+				[1] = 1600.6908522644, 
+				[2] = 403.6579297631, 
+			}, 
+			["actions"] = { 
+				["auto"] = "mergeEast", 
+			}, 
+			["speedFactor"] = 1.5, 
+		}, 
+		["243"] = { 
+			["pos"] = { 
+				[2] = 663.59486685043, 
+				[1] = 77.435430174095, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "235", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["152"] = { 
+			["pos"] = { 
+				[1] = 635.35394631263, 
+				[2] = 85.676301033568, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "154", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["rallyInGatesS"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[1] = 1400.7030029421, 
+				[2] = 704.04443672726, 
+			}, 
+			["actions"] = { 
+				["gate2"] = "gateS2", 
+				["gate1"] = "toGateS1", 
+				["passGates"] = "rallyOutGatesS", 
+			}, 
+		}, 
+		["217"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[1] = 1234.9543989462, 
+				[2] = 125.20813375633, 
+			}, 
+			["actions"] = { 
+				["taxi"] = "rallyOutGatesN", 
+			}, 
+			["speedFactor"] = 0.01, 
+		}, 
+		["170"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[2] = 801.41641749847, 
+				[1] = 1157.1492711795, 
+			}, 
+			["actions"] = { 
+				["taxi"] = "rallyOutGatesS", 
+			}, 
+			["speedFactor"] = 0.01, 
+		}, 
+		["toRallyOutGatesS"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[2] = 652.82858591781, 
+				[1] = 1234.721752234, 
+			}, 
+			["actions"] = { 
+				["auto"] = "rallyOutGatesS", 
+			}, 
+		}, 
+		["235"] = { 
+			["pos"] = { 
+				[2] = 595.26705530943, 
+				[1] = 188.46812392822, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "decideRunway3", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["takeoff3"] = { 
+			["queueing"] = false, 
+			["pos"] = { 
+				[2] = 510.69961635499, 
+				[1] = 1394.9293269758, 
+			}, 
+			["actions"] = { 
+				["auto"] = "41", 
+			}, 
+		}, 
+		["158"] = { 
+			["pos"] = { 
+				[2] = 381.27829232653, 
+				[1] = 1168.5888864113, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 2, 
+			["actions"] = { 
+				["auto"] = "13", 
+			}, 
+			["altitude"] = 50, 
+		}, 
+		["takeoff1"] = { 
+			["queueing"] = false, 
+			["pos"] = { 
+				[2] = 549.10981684077, 
+				[1] = 1368.3777045689, 
+			}, 
+			["actions"] = { 
+				["auto"] = "121", 
+			}, 
+		}, 
+		["215"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[1] = 1555.9965456572, 
+				[2] = 126.71067110443, 
+			}, 
+			["actions"] = { 
+				["taxi"] = "toRallyOutGatesN3", 
+			}, 
+			["speedFactor"] = 0.01, 
+		}, 
+		["targetRunway3"] = { 
+			["pos"] = { 
+				[2] = 512.67940958322, 
+				[1] = 735.18341533566, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 2.5, 
+			["actions"] = { 
+				["auto"] = "land3Threshold", 
+			}, 
+			["altitude"] = 50, 
+		}, 
+		["249"] = { 
+			["pos"] = { 
+				[2] = 120.44613437077, 
+				[1] = 107.60106918161, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "250", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["186"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[2] = 798.64856063393, 
+				[1] = 1364.2466581423, 
+			}, 
+			["actions"] = { 
+				["taxi"] = "toRallyOutGatesS", 
+			}, 
+			["speedFactor"] = 0.01, 
+		}, 
+		["250"] = { 
+			["pos"] = { 
+				[2] = 231.86162165902, 
+				[1] = 70.748254155499, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "251", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["232"] = { 
+			["pos"] = { 
+				[2] = 843.66712018244, 
+				[1] = 549.32437862912, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "233", 
 			}, 
 			["altitude"] = 100, 
 		}, 
@@ -304,14 +520,117 @@ return {
 				["cross"] = "83", 
 			}, 
 		}, 
-		["29"] = { 
-			["queueing"] = true, 
+		["land2threshold"] = { 
+			["queueing"] = false, 
 			["pos"] = { 
-				[1] = 1796.0255742589, 
-				[2] = 700.30434530024, 
+				[2] = 404.52876197124, 
+				[1] = 1103.376245527, 
 			}, 
 			["actions"] = { 
-				["auto"] = "mergeSouth", 
+				["auto"] = "land2End", 
+			}, 
+			["speedFactor"] = 2, 
+		}, 
+		["toRallyOutGatesN2"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[1] = 1348.6463916192, 
+				[2] = 296.4973914399, 
+			}, 
+			["actions"] = { 
+				["auto"] = "rallyOutGatesN", 
+			}, 
+		}, 
+		["150"] = { 
+			["pos"] = { 
+				[1] = 1145.5434958628, 
+				[2] = 120.72749146068, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "151", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["248"] = { 
+			["pos"] = { 
+				[2] = 81.879234924836, 
+				[1] = 203.58979669149, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "249", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["targetRunway2"] = { 
+			["pos"] = { 
+				[1] = 831.65752915838, 
+				[2] = 395.43359075979, 
+			}, 
+			["queueing"] = false, 
+			["altitude"] = 50, 
+			["actions"] = { 
+				["auto"] = "land2threshold", 
+			}, 
+			["speedFactor"] = 2.5, 
+		}, 
+		["156"] = { 
+			["pos"] = { 
+				[1] = 1185.7874552421, 
+				[2] = 136.30579831717, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "145", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["gateN3"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[1] = 1559.5024661361, 
+				[2] = 132.72082049683, 
+			}, 
+			["actions"] = { 
+				["auto"] = "215", 
+			}, 
+		}, 
+		["148"] = { 
+			["pos"] = { 
+				[1] = 673.00152121583, 
+				[2] = 232.37202393222, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "targetRunway2", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["240"] = { 
+			["pos"] = { 
+				[2] = 600.96103960452, 
+				[1] = 690.96223796931, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "238", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["toGateS1"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[2] = 651.99294136357, 
+				[1] = 1296.5594492483, 
+			}, 
+			["actions"] = { 
+				["auto"] = "gateS1", 
 			}, 
 		}, 
 		["121"] = { 
@@ -324,80 +643,96 @@ return {
 			}, 
 			["altitude"] = 300, 
 		}, 
-		["nToStart2"] = { 
-			["queueing"] = true, 
+		["251"] = { 
 			["pos"] = { 
-				[2] = 298.6213749357, 
-				[1] = 1009.5133747366, 
+				[2] = 326.99330695899, 
+				[1] = 123.8848711699, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
-				["auto"] = "83", 
+				["auto"] = "decideRunway2", 
 			}, 
+			["altitude"] = 100, 
 		}, 
 		["151"] = { 
-			["queueing"] = false, 
 			["pos"] = { 
 				[1] = 1097.5103830553, 
 				[2] = 68.799801939033, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
 				["auto"] = "152", 
 			}, 
 			["altitude"] = 100, 
 		}, 
-		["takeoff1"] = { 
-			["queueing"] = false, 
+		["gateN2"] = { 
+			["queueing"] = true, 
 			["pos"] = { 
-				[2] = 549.10981684077, 
-				[1] = 1368.3777045689, 
+				[1] = 1397.7292783238, 
+				[2] = 133.72251206223, 
 			}, 
 			["actions"] = { 
-				["auto"] = "121", 
+				["auto"] = "212", 
 			}, 
 		}, 
 		["targetRunway1"] = { 
-			["queueing"] = false, 
 			["pos"] = { 
 				[2] = 212.22080411616, 
 				[1] = 1023.2908289764, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 2.5, 
 			["actions"] = { 
 				["changeToRunway2"] = "runway1To2", 
 				["changeToRunway3"] = "runway1To3", 
 				["auto"] = "158", 
 			}, 
-			["altitude"] = 50, 
+			["altitude"] = 100, 
 		}, 
-		["156"] = { 
-			["queueing"] = false, 
+		["toGateN1"] = { 
+			["queueing"] = true, 
 			["pos"] = { 
-				[1] = 1185.7874552421, 
-				[2] = 136.30579831717, 
+				[1] = 1298.0609675664, 
+				[2] = 212.85614572891, 
 			}, 
 			["actions"] = { 
-				["auto"] = "145", 
+				["auto"] = "gateN1", 
 			}, 
-			["altitude"] = 80, 
+		}, 
+		["242"] = { 
+			["pos"] = { 
+				[2] = 759.68085182996, 
+				[1] = 77.435430174095, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "243", 
+			}, 
+			["altitude"] = 100, 
 		}, 
 		["runway1To2"] = { 
-			["queueing"] = false, 
 			["pos"] = { 
 				[1] = 1133.8597657204, 
 				[2] = 218.09190931377, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
 				["auto"] = "156", 
 			}, 
-			["altitude"] = 60, 
+			["altitude"] = 100, 
 		}, 
 		["gateS1"] = { 
 			["queueing"] = true, 
 			["pos"] = { 
-				[1] = 1161.3602962535, 
-				[2] = 851.50031822587, 
+				[2] = 793.51378247771, 
+				[1] = 1161.1005886899, 
 			}, 
 			["actions"] = { 
-				["taxi"] = "rallyOutGatesS", 
+				["auto"] = "170", 
 			}, 
 		}, 
 		["toGatesN"] = { 
@@ -417,30 +752,20 @@ return {
 				[2] = 280.93733725616, 
 			}, 
 			["actions"] = { 
-				["gate2"] = "gateN2", 
-				["gate1"] = "gateN1", 
+				["gate2"] = "toGateN2", 
 				["gate3"] = "gateN3", 
+				["gate1"] = "toGateN1", 
+				["passGates"] = "rallyOutGatesN", 
 			}, 
 		}, 
-		["decideEast"] = { 
+		["nToStart2"] = { 
 			["queueing"] = true, 
 			["pos"] = { 
-				[2] = 413.82661639743, 
-				[1] = 1851.2602537406, 
+				[2] = 298.6213749357, 
+				[1] = 1009.5133747366, 
 			}, 
 			["actions"] = { 
-				["taxiGatesS"] = "toGatesS", 
-				["taxiGatesN"] = "toGatesN", 
-			}, 
-		}, 
-		["land2End"] = { 
-			["queueing"] = false, 
-			["pos"] = { 
-				[1] = 1600.6908522644, 
-				[2] = 403.6579297631, 
-			}, 
-			["actions"] = { 
-				["auto"] = "mergeEast", 
+				["auto"] = "83", 
 			}, 
 		}, 
 		["113"] = { 
@@ -465,47 +790,61 @@ return {
 			}, 
 			["altitude"] = 300, 
 		}, 
-		["rallyOutGatesS"] = { 
-			["queueing"] = true, 
+		["238"] = { 
 			["pos"] = { 
-				[1] = 1088.1710351184, 
-				[2] = 698.17103511845, 
+				[2] = 693.48828439962, 
+				[1] = 749.32557699392, 
 			}, 
-			["actions"] = { 
-				["auto"] = "decideWest", 
-			}, 
-		}, 
-		["decideRunway2"] = { 
 			["queueing"] = false, 
-			["pos"] = { 
-				[1] = 473.07991655749, 
-				[2] = 368.68220892654, 
-			}, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
-				["auto"] = "targetRunway2", 
-				["changeToRunway3"] = "targetRunway3", 
+				["auto"] = "230", 
 			}, 
 			["altitude"] = 100, 
 		}, 
-		["runway1To3"] = { 
+		["247"] = { 
+			["pos"] = { 
+				[2] = 76.736981665378, 
+				[1] = 555.83414496435, 
+			}, 
 			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "248", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["decideEast"] = { 
+			["queueing"] = true, 
+			["pos"] = { 
+				[2] = 413.82661639743, 
+				[1] = 1851.2602537406, 
+			}, 
+			["actions"] = { 
+				["taxiGatesS"] = "toGatesS", 
+				["taxiGatesN"] = "toGatesN", 
+			}, 
+		}, 
+		["runway1To3"] = { 
 			["pos"] = { 
 				[1] = 1123.4742278161, 
 				[2] = 180.44433441057, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
 				["auto"] = "150", 
 			}, 
-			["altitude"] = 60, 
+			["altitude"] = 100, 
 		}, 
 		["gateS2"] = { 
 			["queueing"] = true, 
 			["pos"] = { 
-				[1] = 1310.9494879339, 
-				[2] = 851.50031822587, 
+				[2] = 794.07825640777, 
+				[1] = 1369.3914688797, 
 			}, 
 			["actions"] = { 
-				["taxi"] = "rallyOutGatesS", 
+				["auto"] = "186", 
 			}, 
 		}, 
 		["land3Threshold"] = { 
@@ -517,17 +856,17 @@ return {
 			["actions"] = { 
 				["auto"] = "land3End", 
 			}, 
+			["speedFactor"] = 2, 
 		}, 
-		["152"] = { 
-			["queueing"] = false, 
+		["rallyOutGatesS"] = { 
+			["queueing"] = true, 
 			["pos"] = { 
-				[1] = 635.35394631263, 
-				[2] = 85.676301033568, 
+				[1] = 1088.1710351184, 
+				[2] = 698.17103511845, 
 			}, 
 			["actions"] = { 
-				["auto"] = "154", 
+				["auto"] = "decideWest", 
 			}, 
-			["altitude"] = 100, 
 		}, 
 		["rallyOutGatesN"] = { 
 			["queueing"] = true, 
@@ -539,55 +878,62 @@ return {
 				["auto"] = "113", 
 			}, 
 		}, 
-		["38"] = { 
-			["queueing"] = false, 
+		["decideRunway2"] = { 
 			["pos"] = { 
-				[1] = 714.90319685538, 
-				[2] = -217.72296688961, 
+				[1] = 473.07991655749, 
+				[2] = 368.68220892654, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
-				["auto"] = "targetRunway1", 
+				["holdForRunway"] = "holdRunway2", 
+				["changeToRunway3"] = "targetRunway3", 
+				["auto"] = "targetRunway2", 
 			}, 
-			["altitude"] = 200, 
+			["altitude"] = 100, 
 		}, 
-		["rallyInGatesS"] = { 
+		["230"] = { 
+			["pos"] = { 
+				[2] = 809.50321441194, 
+				[1] = 711.60293103899, 
+			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
+			["actions"] = { 
+				["auto"] = "232", 
+			}, 
+			["altitude"] = 100, 
+		}, 
+		["212"] = { 
 			["queueing"] = true, 
 			["pos"] = { 
-				[1] = 1400.7030029421, 
-				[2] = 704.04443672726, 
+				[1] = 1393.7225120622, 
+				[2] = 126.20982532173, 
 			}, 
 			["actions"] = { 
-				["gate2"] = "gateS2", 
-				["gate1"] = "gateS1", 
+				["taxi"] = "toRallyOutGatesN2", 
 			}, 
+			["speedFactor"] = 0.01, 
 		}, 
-		["takeoff2"] = { 
-			["queueing"] = false, 
+		["246"] = { 
 			["pos"] = { 
-				[2] = 403.44233481364, 
-				[1] = 1473.2193772403, 
+				[2] = 159.87007602661, 
+				[1] = 662.10737899315, 
 			}, 
-			["actions"] = { 
-				["auto"] = "40", 
-			}, 
-		}, 
-		["targetRunway3"] = { 
 			["queueing"] = false, 
-			["pos"] = { 
-				[2] = 512.67940958322, 
-				[1] = 735.18341533566, 
-			}, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
-				["auto"] = "land3Threshold", 
+				["auto"] = "247", 
 			}, 
-			["altitude"] = 50, 
+			["altitude"] = 100, 
 		}, 
 		["154"] = { 
-			["queueing"] = false, 
 			["pos"] = { 
 				[1] = 496.44737684223, 
 				[2] = 440.08278201881, 
 			}, 
+			["queueing"] = false, 
+			["speedFactor"] = 3, 
 			["actions"] = { 
 				["auto"] = "targetRunway3", 
 			}, 
@@ -598,6 +944,6 @@ return {
 	["mapEntrances"] = { 
 		[1] = "1", 
 		[2] = "37", 
-		[3] = "38", 
+		[3] = "225", 
 	}, 
 }

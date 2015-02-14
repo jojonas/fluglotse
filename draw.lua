@@ -29,13 +29,15 @@ function love.draw()
 			drawPlane(plane, i==uiSelectedListElement)
 		end
 		
-		
 		if explosionPosition then 
 			local explosionScale = 0.3 * (love.timer.getTime() - explosionStart)
 			love.graphics.setColor(255, 255, 255, math.max(0, 255 - (love.timer.getTime() - explosionStart) * 130.0))
 			love.graphics.draw(explosionImage, explosionPosition[1], explosionPosition[2], 
 										0, explosionScale, explosionScale, explosionImage:getWidth()/2, explosionImage:getHeight()/2) 
 		end
+		
+		drawSky(map)
+		
 		love.graphics.setScissor()
 		
 	love.graphics.pop()
