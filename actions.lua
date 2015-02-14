@@ -1,90 +1,98 @@
 actionOrder = {
-	"taxi", "cross", "takeoff", "gate1", "gate2", 
-	"gate3", "taxiStart1", "taxiStart2", "taxiStart3", "taxiGatesN", 
-	"taxiGatesS", "changeToRunway1", "changeToRunway2", "changeToRunway3", "holdForRunway", 
-	"passGates",
+	"changeToRunway2", "changeToRunway3", "holdForRunway", "***",
+	"gate1", "gate2", "gate3", "passGates",
+	"taxiGatesN", "taxiGatesS", "cross", "taxi",
+	"taxiStart1", "taxiStart2", "taxiStart3", "takeoff"
 }
+
+local function enterGate(map, plane)
+	map.score = map.score + scoreChangeOnGate
+end
 
 actions = {
 	["taxi"] = {
-		name = "Taxi to runway",
-		message = "Permission to taxi to runway",
-		shortcut = "q"
+		name = "Leave gate",
+		message = "Permission to taxi.",
+		shortcut = "f"
 	},
 	["cross"] = {
 		name = "Cross runway",
 		message = "Permission to cross runway",
-		shortcut = "w"
+		shortcut = "d"
 	},
 	["takeoff"] = {
 		name = "Take off",
 		message = "Runway cleared for takeoff",
-		shortcut = "e"
+		shortcut = "f"
 	},
 	["gate1"] = {
 		name = "To gate 1",
-		message = "Permission to continue to gate 1",
-		shortcut = "r"
+		message = "Permission to continue to gate 1 ($ " .. tostring(scoreChangeOnGate) .. ")",
+		shortcut = "a",
+		onEnter = enterGate
 	},
 	["gate2"] = {
 		name = "To gate 2",
-		message = "Permission to continue to gate 2",
-		shortcut = "t"
+		message = "Permission to continue to gate 2 ($ " .. tostring(scoreChangeOnGate) .. ")",
+		shortcut = "s",
+		onEnter = enterGate
 	},
 	["gate3"] = {
 		name = "To gate 3",
-		message = "Permission to continue to gate 3",
-		shortcut = "a",
+		message = "Permission to continue to gate 3 ($ " .. tostring(scoreChangeOnGate) .. ")",
+		shortcut = "d",
+		onEnter = enterGate
 	},
 	["taxiStart1"] = {
-		name = "To runway 1",
-		message = "Permission to taxi to runway 1",
-		shortcut = "s",
+		name = "To runway 31",
+		message = "Permission to taxi to runway 31",
+		shortcut = "a",
 	},
 	["taxiStart2"] = {
-		name = "To runway 2",
-		message = "Permission to taxi to runway 2",
-		shortcut = "d",
+		name = "To runway 27 L",
+		message = "Permission to taxi to runway 27 L",
+		shortcut = "s",
 	},
 	["taxiStart3"] = {
-		name = "To runway 3",
-		message = "Permission to taxi to runway 3",
-		shortcut = "f",
+		name = "To runway 27 R",
+		message = "Permission to taxi to runway 27 R",
+		shortcut = "d",
 	},
 	["taxiGatesN"] = {
 		name = "To northern gates",
 		message = "Proceed to northern gates",
-		shortcut = "g",
+		shortcut = "a",
 	},
 	["taxiGatesS"] = {
 		name = "To southern gates",
 		message = "Proceed to southern gates",
-		shortcut = "h",
-	},
-	["changeToRunway1"] = {
-		name = "Change to runway 1",
-		message = "Cancel approach, change to runway 1",
-		shortcut = "q",
+		shortcut = "s",
 	},
 	["changeToRunway2"] = {
-		name = "Change to runway 2",
-		message = "Cancel approach, change to runway 2",
-		shortcut = "w",
+		name = "Change to runway 27 L",
+		message = "Cancel approach, change to runway 27 L",
+		shortcut = "s",
 	},
 	["changeToRunway3"] = {
-		name = "Change to runway 3",
-		message = "Cancel approach, change to runway 3",
-		shortcut = "e",
+		name = "Change to runway 27 R",
+		message = "Cancel approach, change to runway 27 R",
+		shortcut = "a",
 	},
 	["holdForRunway"] = {
 		name = "Hold for touchdown",
-		message = "Cancel approach, proceed with holding pattern",
-		shortcut = "a",
+		message = "Cancel approach, proceed with holding pattern ($ " .. tostring(scoreChangeOnHold) .. ")",
+		shortcut = "d",
+		onEnter = function(map, plane) 
+			map.score = map.score + scoreChangeOnHold
+		end
 	},
 	["passGates"] = {
 		name = "Pass Gates",
-		message = "Do not stop at gates, continue to runway out.",
-		shortcut = "x",
+		message = "Do not stop at gates, continue to runway out ($ " .. tostring(scoreChangeOnPass) .. ")",
+		shortcut = "f",
+		onEnter = function(map, plane)
+			map.score = map.score + scoreChangeOnPass
+		end
 	},
 	
 }

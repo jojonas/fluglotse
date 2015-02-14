@@ -4,9 +4,15 @@ currentMap = nil
 
 local fogImage = love.graphics.newImage("fog.png")
 
-function loadMap(map) 
+
+
+function loadMap(map, rescale) 
+	if rescale == nil then rescale = true end
+	
 	map.planes = {}
 	map.messages = {}
+	map.explosions = {}
+	map.score = 70000 -- start money
 	
 	map.nextSpawnTime = love.timer.getTime()
 	
@@ -26,14 +32,16 @@ function loadMap(map)
 		node.name = name
 	end
 	
-	-- scale
-	map.bounds[1][1] = map.bounds[1][1] * map.metersPerPixel
-	map.bounds[2][1] = map.bounds[2][1] * map.metersPerPixel
-	map.bounds[1][2] = map.bounds[1][2] * map.metersPerPixel
-	map.bounds[2][2] = map.bounds[2][2] * map.metersPerPixel
-	for _, node in pairs(map.nodes) do
-		node.pos[1] = node.pos[1] * map.metersPerPixel
-		node.pos[2] = node.pos[2] * map.metersPerPixel
+	if rescale then
+		-- scale
+		map.bounds[1][1] = map.bounds[1][1] * map.metersPerPixel
+		map.bounds[2][1] = map.bounds[2][1] * map.metersPerPixel
+		map.bounds[1][2] = map.bounds[1][2] * map.metersPerPixel
+		map.bounds[2][2] = map.bounds[2][2] * map.metersPerPixel
+		for _, node in pairs(map.nodes) do
+			node.pos[1] = node.pos[1] * map.metersPerPixel
+			node.pos[2] = node.pos[2] * map.metersPerPixel
+		end
 	end
 		
 	-- prepare objects
@@ -69,7 +77,7 @@ function drawSky(map)
 	local x,y = 0,0
 
 	local wrap = (fogImage:getWidth() * map.metersPerPixel)
-	local dx = love.timer.getTime()*30 % wrap
+	local dx = love.timer.getTime()*50 % wrap
 
 	x = -wrap
 	love.graphics.setBlendMode("subtractive")

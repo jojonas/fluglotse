@@ -29,11 +29,12 @@ function love.draw()
 			drawPlane(plane, i==uiSelectedListElement)
 		end
 		
-		if explosionPosition then 
-			local explosionScale = 0.3 * (love.timer.getTime() - explosionStart)
-			love.graphics.setColor(255, 255, 255, math.max(0, 255 - (love.timer.getTime() - explosionStart) * 130.0))
-			love.graphics.draw(explosionImage, explosionPosition[1], explosionPosition[2], 
-										0, explosionScale, explosionScale, explosionImage:getWidth()/2, explosionImage:getHeight()/2) 
+		for i=1,#currentMap.explosions do
+			local explosion = currentMap.explosions[i]
+			local scale = explosion.size * math.pow(explosion.age/explosion.duration, 0.2)
+			local alpha = 255*(1-math.pow(explosion.age/explosion.duration, 4))
+			love.graphics.setColor(255, 255, 255, alpha)
+			love.graphics.draw(explosion.image, explosion.pos[1], explosion.pos[2], explosion.rotation, scale, scale, explosion.image:getWidth()/2, explosion.image:getHeight()/2) 
 		end
 		
 		drawSky(map)
@@ -42,6 +43,6 @@ function love.draw()
 		
 	love.graphics.pop()
 	
-	drawUI()
 	drawChat()
+	drawUI()
 end

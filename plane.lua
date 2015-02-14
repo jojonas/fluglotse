@@ -1,8 +1,21 @@
 require "helpers"
 
+-- penalties
+scoreChangeOnCrash = -1000000
+scoreChangeOnHold = -2000
+-- scoreChangeOnWait = -2000
+scoreChangeOnPass = -50000
+
+-- benefits
+scoreChangeOnLeave = 2000
+scoreChangeOnIncoming = 2000
+scoreChangeOnGate = 5000
+
+
 local planeImage = love.graphics.newImage("plane.png")
 local planeShadowImage = love.graphics.newImage("plane_shadow.png")
 local planeSelectionImage = love.graphics.newImage("plane_selection.png")
+local explosionImage = love.graphics.newImage("explosion.png")
 
 function planeDirection(plane)
 	return vectorNormalized({plane.target.pos[1] - plane.pos[1], plane.target.pos[2] - plane.pos[2], plane.target.altitude - plane.pos[3]})
@@ -71,8 +84,8 @@ function spawnPlane()
 		spread = 60,
 		length = 60,
 		height = 20,
-		hardRadius = 40, -- for selection box, labeling etc
-		softRadius = 60,
+		hardRadius = 37, -- for selection box, labeling etc
+		softRadius = 60, -- not used
 		image = planeImage,
 		shadowImage = planeShadowImage,
 		selectionImage = planeSelectionImage, 
@@ -91,7 +104,8 @@ function spawnPlane()
 	until unique
 	
 	assert(plane.target, "Plane has no target.")
-	postMessage(plane.identifier, "Incoming...")
+	postMessage(plane.identifier, "Incoming. ($ " .. tostring(scoreChangeOnIncoming) .. ")")
+	map.score = map.score + scoreChangeOnIncoming
 	
 	table.insert(map.planes, plane)
 	
@@ -156,11 +170,25 @@ function updatePlane(plane, dt)
 					-- stop
 				end
 			else 
-				postMessage("System", "Crash of " .. plane.identifier .. " and " .. collidingPlane.identifier .. "!")
-				if not explosionPosition then
-					explosionPosition = {(plane.pos[1] + collidingPlane.pos[1])/2, (plane.pos[2] + collidingPlane.pos[2])/2}
-					explosionStart = love.timer.getTime()
+				postMessage("System", "Crash of " .. plane.identifier .. " and " .. collidingPlane.identifier .. "! ($ " .. tostring(scoreChangeOnCrash) .. ")")
+				map.score = map.score + scoreChangeOnCrash
+				for i=1,5 do
+					local x = (plane.pos[1] + collidingPlane.pos[1])/2
+					local y = (plane.pos[2] + collidingPlane.pos[2])/2
+					local spread = 50
+					local explosion = {
+						image = explosionImage,
+						duration = (love.math.random()*2-1)*0.5 + 1.5,
+						age = 0,
+						rotation = love.math.random()*2*math.pi,
+						pos = {(love.math.random()*2-1)*spread + x, (love.math.random()*2-1)*spread + y},
+						size = (love.math.random()*2-1)*0.1 + 0.2
+					}
+					table.insert(map.explosions, explosion)
 				end
+				removePlane(plane)
+				removePlane(collidingPlane)
+				return
 			end
 		end
 		
@@ -170,16 +198,22 @@ function updatePlane(plane, dt)
 		
 	else -- arrived at target!
 		for i=1,#map.mapExits do
-			if plane.target.name == map.mapExits[i] then
-				postMessage(plane.identifier, "Out!")
+			if plane.target.name == map.mapExits[i] then -- TODO: move to actions
+				postMessage(plane.identifier, "Out! ($ " .. tostring(scoreChangeOnLeave) .. ")")
 				removePlane(plane)
+				map.score = map.score + scoreChangeOnLeave
 				return
 			end
 		end
 		
-		local nxt = plane.target.actions[plane.nextAction]
-		assert(nxt, "Next action is undefined.")
-		if nxt == plane.target then
+		local action = actions[plane.nextAction]
+		if action and action.onEnter then
+			action.onEnter(map, plane)
+		end
+		
+		local nextNode = plane.target.actions[plane.nextAction]
+		assert(nextNode, "Next action is undefined.")
+		if nextNode == plane.target then
 			if not plane.promptSent then
 				postMessage(plane.identifier, randomChoice({"Ready.", "On your go.", "Waiting for your command."}))
 				plane.promptSent = true
@@ -188,11 +222,11 @@ function updatePlane(plane, dt)
 			plane.promptSent = nil
 		end 
 		
-		plane.target = nxt
+		plane.target = nextNode
 		plane.nextAction = "auto"
 	end
 	
-	local easeFactor = 3
+	local easeFactor = 2
 	local easeDirection = {plane.pos[1] - plane.drawPos[1], plane.pos[2] - plane.drawPos[2]}
 	plane.drawPos[1] = plane.drawPos[1] + easeFactor*easeDirection[1] * dt
 	plane.drawPos[2] = plane.drawPos[2] + easeFactor*easeDirection[2] * dt

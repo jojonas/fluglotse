@@ -8,6 +8,7 @@ require "ui"
 require "actions"
 require "chat"
 
+
 function love.run()
 	if love.math then
 		love.math.setRandomSeed(os.time())

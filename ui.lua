@@ -5,7 +5,7 @@ local fillerColor = {50, 50, 50, 255}
 local hoverColors = {borderColor, {100, 100, 100, 255}}
 local rectBorder = 1
 local uiElementsMargin = 2
-local numButtonsX = 5
+local numButtonsX = 4
 local numButtonsY = 4
 local buttonMargin = 3
 local elementsInList = 8
@@ -16,6 +16,9 @@ local uiListElementOffset = 0
 local lastLeftMouseDown = false
 local showKeyboardShortcuts = true
 local lastPressedMap = {}
+
+local uiFont = love.graphics.newFont("EffectsEighty.ttf", 18)
+local scoreFont = love.graphics.newFont("EffectsEighty.ttf", 30)
 
 function getGameViewDimensions()
 	return love.window.getWidth(), love.window.getHeight() - uiHeight
@@ -76,6 +79,17 @@ end
 
 function drawUI()
 	local map = currentMap
+	
+	local text = "$" .. tostring(map.score) 
+	local padding = 15
+	local scoreW, scoreH = scoreFont:getWidth(text)+padding, scoreFont:getHeight()+padding
+	
+	drawBorderRect(love.window.getWidth()-scoreW, 0, scoreW, scoreH, borderColor, fillerColor)
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.setFont(scoreFont)
+	love.graphics.printf(text, love.window.getWidth()-scoreW, padding/2, scoreW, "center")
+
+	love.graphics.setFont(uiFont)
 	
 	local uiStartY = love.window.getHeight() - uiHeight
 	
@@ -138,8 +152,8 @@ function drawUI()
 					local w = buttonSizeW - buttonMargin
 					local h = buttonSizeH - buttonMargin
 					
-					local label = action.name .. (showKeyboardShortcuts and " [" .. action.shortcut .. "]" or "")
-					if button(label, x, y, w, h) or love.keyboard.isDown(action.shortcut) and not lastPressedMap[action.shortcut] then
+					local label = action.name .. (showKeyboardShortcuts and " [" .. action.shortcut:upper() .. "]" or "")
+					if button(label, x, y, w, h) then
 						activateAction(actionId)
 					end
 				end
@@ -148,23 +162,27 @@ function drawUI()
 		end
 	end
 	
-	for i = 1, #actionOrder do
-		local key = actions[actionOrder[i]].shortcut
-		lastPressedMap[key] = love.keyboard.isDown(key)
-	end
-	
 	lastLeftMouseDown = love.mouse.isDown("l")
-	
+
 	love.graphics.setColor(255, 255, 255, 255)
 	for i=1,#map.planes do
 		local plane = map.planes[i]
 		drawPlaneLabel(plane)
 	end
 	
-	
 	if uiSelectedListElement >= 1 and uiSelectedListElement <= #map.planes then
 		love.graphics.setColor(47,255,136,255)
 		drawPlaneLabel(map.planes[uiSelectedListElement])
+	end
+	
+	if map.score < 0 then
+		local w,h = love.graphics.getDimensions()
+		love.graphics.setColor(0,0,0,200)
+		love.graphics.rectangle("fill", 0, 0, w, h)
+		love.graphics.setColor(47,255,136,255)
+		love.graphics.setFont(scoreFont)
+		love.graphics.printf("You're broke. Game over!\nPress space to restart.", 0, h/2 - love.graphics.getFont():getHeight(), w, "center")
+		love.graphics.setFont(uiFont)
 	end
 end
 
@@ -227,15 +245,16 @@ end
 function love.keypressed(key, isrepeat)
 	for i = 1, #actionOrder do
 		local actionId = actionOrder[i]
-		local shortcut = actions[actionId].shortcut
-		if key == shortcut then
-			activateAction(actionId)
+		local action = actions[actionId]
+		if action then
+			local shortcut = action.shortcut
+			if key == shortcut then
+				activateAction(actionId)
+			end
 		end
 	end
 	
-	if key == " " then
-		currentMap.nextSpawnTime = love.timer.getTime() + 0.5
-	elseif key == "up" then
+	if key == "up" then
 		changeSelectedElementBy(-1)
 	elseif key == "down" then
 		changeSelectedElementBy(1)
