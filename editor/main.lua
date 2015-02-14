@@ -154,7 +154,9 @@ function loadMap(filename)
 end
 
 function love.textinput(str)
-	consoleInputLine = consoleInputLine .. str
+	if not love.keyboard.isDown("lctrl") and not love.keyboard.isDown("rctrl") then
+		consoleInputLine = consoleInputLine .. str
+	end
 end
 
 function interpretCommand(str)
@@ -363,6 +365,14 @@ function love.keypressed(key, isrepeat)
 			if selectedNode then
 				nodes[selectedNode].queueing = not nodes[selectedNode].queueing
 			end
+		end
+		
+		if selectedNode and nodes[selectedNode] then
+			local deltaMove = love.keyboard.isDown("lshift") and 5 or 1
+			if key == "i" then nodes[selectedNode].pos[2] = nodes[selectedNode].pos[2] - deltaMove end
+			if key == "j" then nodes[selectedNode].pos[1] = nodes[selectedNode].pos[1] - deltaMove end
+			if key == "k" then nodes[selectedNode].pos[2] = nodes[selectedNode].pos[2] + deltaMove end
+			if key == "l" then nodes[selectedNode].pos[1] = nodes[selectedNode].pos[1] + deltaMove end
 		end
 	else
 		if key == "return" then
