@@ -268,6 +268,8 @@ function love.keypressed(key, isrepeat)
 		changeSelectedElementTo(#currentMap.planes)
 	elseif key == "lalt" or key == "ralt" then
 		showKeyboardShortcuts = not showKeyboardShortcuts
+	elseif key == "escape" then
+		love.event.push("quit")
 	else
 		for i=1,9 do
 			if key == tostring(i) or key == "kp" .. tostring(i) then
