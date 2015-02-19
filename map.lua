@@ -1,5 +1,3 @@
-require "maps"
-
 currentMap = nil
 
 local fogImage = love.graphics.newImage("fog.png")
