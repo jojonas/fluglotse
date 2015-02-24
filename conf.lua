@@ -8,7 +8,7 @@ function love.conf(t)
 	t.window.highdpi = false			-- Enable high-dpi mode for the window on a Retina display (true/false).
 
 	t.identity = "Fluglotse" -- The name of the save directory (string)
-	t.version = "0.9.1"                -- The LÖVE version this game was made for (string)
+	t.version = "0.9.2"                -- The LÖVE version this game was made for (string)
 	t.console = false                  -- Attach a console (boolean, Windows only)
 
 	t.window.title = "Fluglotse" -- The window title (string)
